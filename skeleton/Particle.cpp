@@ -14,7 +14,12 @@ Particle::~Particle()
 void Particle::integrate(double t)
 {
 	pose.p += vel_ * t;
+
+	//Cambio de color
 	float nColor;
-	modff(color.x + 0.1, &nColor);
-	color.x = nColor;
+	float a = renderItem->color.x + (0.0002 * colorDir);
+	if (a >= 1 || a <= 0)
+		colorDir *= -1;
+	renderItem->color.x = a;
+	renderItem->color.z = a;
 }
