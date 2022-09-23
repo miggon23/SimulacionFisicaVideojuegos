@@ -9,6 +9,7 @@
 #include "callbacks.hpp"
 
 #include "Particle.h"
+#include <vector>
 
 #include <iostream>
 
@@ -31,6 +32,9 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 Particle* particle = NULL;
+
+std::vector<Particle*> vParticle;
+
 
 
 // Initialize physics engine
@@ -57,7 +61,11 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc); 
 
-	particle = new Particle({ 1, -5, 10 }, { 5, 40, 0 }, {0, -9.8, 0}, 0.9);
+
+	Vector3 camDir = GetCamera()->getDir();
+	auto camPos = GetCamera()->getEye();
+	float vel = 30;
+	particle = new Proyectil( camPos, camDir * vel, {0, -1.8, 0}, 0.9);
 	}
 
 
@@ -71,6 +79,9 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 	particle->integrate(t);
+	for (auto p : vParticle) {
+		p->integrate(t);
+	}
 }
 
 // Function to clean data
@@ -102,8 +113,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 	//case 'B': break;
 	//case ' ':	break;
-	case ' ':
+	case 'B':
 	{
+		Vector3 camDir = GetCamera()->getDir();
+		auto camPos = GetCamera()->getEye();
+		float vel = 30;
+		vParticle.push_back(new Proyectil(camPos, camDir * vel, { 0, -1.8, 0 }, 0.9));
 		break;
 	}
 	default:

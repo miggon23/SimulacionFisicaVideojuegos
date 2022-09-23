@@ -12,7 +12,12 @@ public:
 
 	void integrate(double t);
 
-private:
+	inline void setVel(Vector3 v) { vel_ = v; };
+	inline void setDumping(float d) { dumping = d; };
+	inline void setAcc(Vector3 ac) { acceleration = ac; };
+	inline void setPos(Vector3 pos) { pose.p = pos; };
+
+protected:
 	Vector3 vel_;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
 	RenderItem* renderItem;
@@ -55,8 +60,17 @@ struct FireworkRule {
 	//Minimun relative velocity
 	Vector3 minVelocity;
 
-	float damping;
+	float dumping;
 
 	std::vector<Payload> payloads;
+};
+
+//--------------------------------------
+class Proyectil : public Particle {
+public:
+	Proyectil(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1);
+
+private:
+	float masa;
 };
 

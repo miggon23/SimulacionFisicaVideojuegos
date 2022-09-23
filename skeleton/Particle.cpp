@@ -1,8 +1,9 @@
 #include "Particle.h"
 
-Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d) : vel_(vel), pose(pos), acceleration(ac), dumping(d)
+Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1) : vel_(vel), pose(pos), acceleration(ac), dumping(d)
 {
 	auto s = CreateShape(physx::PxSphereGeometry(1));
+	//renderItem = std::make_unique<RenderItem(s, &pose, color)>;
 	renderItem = new RenderItem(s, &pose, color);
 
 }
@@ -19,10 +20,17 @@ void Particle::integrate(double t)
 	pose.p += vel_ * t + 0.5 * acceleration * t;
 
 	//Cambio de color
-	float nColor;
 	float a = renderItem->color.x + (0.0002 * colorDir);
 	if (a >= 1 || a <= 0)
 		colorDir *= -1;
 	renderItem->color.x = a;
 	renderItem->color.z = a;
 }
+
+//------------------------------------------
+
+Proyectil::Proyectil(Vector3 pos, Vector3 vel, Vector3 ac, float d) : Particle(pos, vel, ac, d)
+{
+	
+}
+
