@@ -8,6 +8,7 @@ class Particle
 {
 public:
 	Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d);
+	Particle(Vector3 pos, float radius);
 	~Particle();
 
 	void integrate(double t);
@@ -16,16 +17,18 @@ public:
 	inline void setDumping(float d) { dumping = d; };
 	inline void setAcc(Vector3 ac) { acceleration = ac; };
 	inline void setPos(Vector3 pos) { pose.p = pos; };
+	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
 
 protected:
 	Vector3 vel_;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
-	RenderItem* renderItem;
+	RenderItem* renderItem = nullptr;
 	Vector4 color = Vector4(0.5f, 0.5f, 0.5f, 1);
 	int colorDir = 1;
 
 	Vector3 acceleration;
-	float dumping;
+	float dumping = 1;
+	bool changingColor = false;
 };
 
 //--------------------------------------------------------------------------------------------
@@ -66,11 +69,18 @@ struct FireworkRule {
 };
 
 //--------------------------------------
+
+enum ProyType {
+	PAINT_BALL = 0,
+	SNOW_BALL,
+};
 class Proyectil : public Particle {
 public:
-	Proyectil(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1);
+	Proyectil(Vector3 pos, ProyType tipo, float radius);
 
 private:
 	float masa;
+	const float PAINT_VEL = 25;
+	const float PAPER_VEL = 12.0;
 };
 

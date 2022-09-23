@@ -5,8 +5,15 @@ Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1) : vel_(vel
 	auto s = CreateShape(physx::PxSphereGeometry(1));
 	//renderItem = std::make_unique<RenderItem(s, &pose, color)>;
 	renderItem = new RenderItem(s, &pose, color);
+	
 
 }
+
+Particle::Particle(Vector3 pos, float radius): pose(pos){
+	auto s = CreateShape(physx::PxSphereGeometry(radius));
+	renderItem = new RenderItem(s, &pose, color);
+}
+
 
 Particle::~Particle()
 {
@@ -19,6 +26,9 @@ void Particle::integrate(double t)
 
 	pose.p += vel_ * t + 0.5 * acceleration * t;
 
+	if (!changingColor)
+		return;
+
 	//Cambio de color
 	float a = renderItem->color.x + (0.0002 * colorDir);
 	if (a >= 1 || a <= 0)
@@ -29,8 +39,34 @@ void Particle::integrate(double t)
 
 //------------------------------------------
 
-Proyectil::Proyectil(Vector3 pos, Vector3 vel, Vector3 ac, float d) : Particle(pos, vel, ac, d)
+Proyectil::Proyectil(Vector3 pos, ProyType tipo, float r) : Particle(pos, r)
 {
+	Vector3 camDir = GetCamera()->getDir();
+
+	switch (tipo)
+	{
+	case PAINT_BALL:
+		setVel(camDir * PAINT_VEL);
+		setAcc({ 0, -1.8, 0 });
+		setDumping(0.98);
+		changingColor = true;
+		
+
+		break;
+	case SNOW_BALL:
+		setVel(camDir * PAPER_VEL);
+		setAcc({ 0, -1.8, 0 });
+		setDumping(0.9);
+		setColor({ 0.9, 0.9, 0.9, 1.0 });
+		changingColor = false;
+
+		break;
+	default:
+		setVel(camDir * PAINT_VEL);
+		setAcc({ 0, -1.8, 0 });
+		setDumping(0.9);
+		break;
+	}
 	
 }
 

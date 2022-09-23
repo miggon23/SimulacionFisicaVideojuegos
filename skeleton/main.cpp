@@ -35,7 +35,8 @@ Particle* particle = NULL;
 
 std::vector<Particle*> vParticle;
 
-
+ProyType pType = PAINT_BALL;
+float radiud;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -62,11 +63,11 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc); 
 
 
-	Vector3 camDir = GetCamera()->getDir();
+	/*Vector3 camDir = GetCamera()->getDir();
 	auto camPos = GetCamera()->getEye();
 	float vel = 30;
-	particle = new Proyectil( camPos, camDir * vel, {0, -1.8, 0}, 0.9);
-	}
+	particle = new Proyectil( camPos, camDir * vel, {0, -1.8, 0}, 0.9);*/
+}
 
 
 // Function to configure what happens in each step of physics
@@ -78,7 +79,6 @@ void stepPhysics(bool interactive, double t)
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
-	particle->integrate(t);
 	for (auto p : vParticle) {
 		p->integrate(t);
 	}
@@ -102,6 +102,8 @@ void cleanupPhysics(bool interactive)
 	gFoundation->release();
 
 	delete particle;
+	for (auto p : vParticle)
+		delete p;
 	}
 
 // Function called when a key is pressed
@@ -115,12 +117,18 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case 'B':
 	{
-		Vector3 camDir = GetCamera()->getDir();
 		auto camPos = GetCamera()->getEye();
-		float vel = 30;
-		vParticle.push_back(new Proyectil(camPos, camDir * vel, { 0, -1.8, 0 }, 0.9));
+		vParticle.push_back(new Proyectil(camPos, pType, 1));
 		break;
 	}
+	case '1':
+		pType = PAINT_BALL;
+		/*radius = 0.3;
+		radius = 0.3;*/
+		break;
+	case '2':
+		pType = SNOW_BALL;
+		break;
 	default:
 		break;
 	}
