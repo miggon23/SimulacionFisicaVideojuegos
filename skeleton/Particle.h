@@ -8,7 +8,7 @@ class Particle
 {
 public:
 	Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d);
-	Particle(Vector3 pos, float radius);
+	Particle(Vector3 pos, Vector3 dir, float radius);
 	~Particle();
 
 	void integrate(double t);
@@ -18,6 +18,10 @@ public:
 	inline void setAcc(Vector3 ac) { acceleration = ac; };
 	inline void setPos(Vector3 pos) { pose.p = pos; };
 	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
+	inline void setAlive(bool b) { alive = b; };
+	inline Vector3 getPos() { return pose.p; };
+
+	inline bool isAlive() { return alive; };
 
 protected:
 	Vector3 vel_;
@@ -29,6 +33,7 @@ protected:
 	Vector3 acceleration;
 	float dumping = 1;
 	bool changingColor = false;
+	bool alive = true;
 };
 
 //--------------------------------------------------------------------------------------------
@@ -76,11 +81,11 @@ enum ProyType {
 };
 class Proyectil : public Particle {
 public:
-	Proyectil(Vector3 pos, ProyType tipo, float radius);
+	Proyectil(Vector3 pos, Vector3 dir, ProyType tipo, float radius);
 
 private:
 	float masa;
-	const float PAINT_VEL = 25;
+	const float PAINT_VEL = 30;     //90 m/s en la realidad
 	const float PAPER_VEL = 12.0;
 };
 

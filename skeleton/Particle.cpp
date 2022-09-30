@@ -9,7 +9,7 @@ Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1) : vel_(vel
 
 }
 
-Particle::Particle(Vector3 pos, float radius): pose(pos){
+Particle::Particle(Vector3 pos, Vector3 dir,float radius): pose(pos){
 	auto s = CreateShape(physx::PxSphereGeometry(radius));
 	renderItem = new RenderItem(s, &pose, color);
 }
@@ -22,6 +22,9 @@ Particle::~Particle()
 
 void Particle::integrate(double t)
 {
+	if (!isAlive())
+		return;
+
 	vel_ = vel_ * pow(dumping, t) + acceleration * t;
 
 	pose.p += vel_ * t + 0.5 * acceleration * t;
@@ -39,7 +42,7 @@ void Particle::integrate(double t)
 
 //------------------------------------------
 
-Proyectil::Proyectil(Vector3 pos, ProyType tipo, float r) : Particle(pos, r)
+Proyectil::Proyectil(Vector3 pos, Vector3 dir, ProyType tipo, float r) : Particle(pos, dir, r)
 {
 	Vector3 camDir = GetCamera()->getDir();
 
@@ -49,8 +52,7 @@ Proyectil::Proyectil(Vector3 pos, ProyType tipo, float r) : Particle(pos, r)
 		setVel(camDir * PAINT_VEL);
 		setAcc({ 0, -1.8, 0 });
 		setDumping(0.98);
-		changingColor = true;
-		
+		changingColor = true;		
 
 		break;
 	case SNOW_BALL:

@@ -9,6 +9,7 @@
 #include "callbacks.hpp"
 
 #include "Particle.h"
+#include "ParticleSystem.h"
 #include <vector>
 
 #include <iostream>
@@ -31,11 +32,11 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
-Particle* particle = NULL;
 
-std::vector<Particle*> vParticle;
+//std::vector<Particle*> vParticle;
+ParticleSystem* pSys;
+RenderItem* renderItemPlano;
 
-ProyType pType = PAINT_BALL;
 float radiud;
 
 // Initialize physics engine
@@ -63,10 +64,11 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc); 
 
 
-	/*Vector3 camDir = GetCamera()->getDir();
-	auto camPos = GetCamera()->getEye();
-	float vel = 30;
-	particle = new Proyectil( camPos, camDir * vel, {0, -1.8, 0}, 0.9);*/
+	pSys = new ParticleSystem();
+
+	auto s = CreateShape(physx::PxPlaneGeometry());
+	PxTransform pose;
+	renderItemPlano = new RenderItem(CreateShape(PxBoxGeometry(300, 1, 300)), new PxTransform(-100, -2, -100), { 1,1,1,1 });
 }
 
 
@@ -79,9 +81,10 @@ void stepPhysics(bool interactive, double t)
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
-	for (auto p : vParticle) {
+	/*for (auto p : vParticle) {
 		p->integrate(t);
-	}
+	}*/
+	pSys->update(t);
 }
 
 // Function to clean data
@@ -100,11 +103,8 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
-
-	delete particle;
-	for (auto p : vParticle)
-		delete p;
-	}
+	DeregisterRenderItem(renderItemPlano);
+}
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
@@ -117,17 +117,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case 'B':
 	{
-		auto camPos = GetCamera()->getEye();
-		vParticle.push_back(new Proyectil(camPos, pType, 1));
+		auto cam = GetCamera();
+		pSys->addParticle(cam->getEye(), cam->getDir());
 		break;
 	}
 	case '1':
-		pType = PAINT_BALL;
-		/*radius = 0.3;
-		radius = 0.3;*/
+		pSys->changeParticleType(PAINT_BALL);
 		break;
 	case '2':
-		pType = SNOW_BALL;
+		pSys->changeParticleType(SNOW_BALL);
 		break;
 	default:
 		break;
