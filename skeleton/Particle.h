@@ -85,7 +85,7 @@ public:
 
 private:
 	float masa;
-	const float PAINT_VEL = 30;     //90 m/s en la realidad
+	const float PAINT_VEL = 45;     //90 m/s en la realidad, 2.5 grm
 	const float PAPER_VEL = 12.0;
 };
 

@@ -32,3 +32,15 @@ void ParticleSystem::addParticle(Vector3 pos, Vector3 dir)
 {
 	listP.push_back(new Proyectil(pos, dir, pType, 1));
 }
+
+ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name)
+{
+	for(auto p : _particle_generators)
+		if(p->getGeneratorName() == name)
+			return p;
+	return nullptr;
+}
+
+void ParticleSystem::generateFireworkSystem()
+{
+}

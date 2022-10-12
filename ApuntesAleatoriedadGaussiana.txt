@@ -1,0 +1,1 @@
+Multiplicamos por la desviación típica y sumamos la media
