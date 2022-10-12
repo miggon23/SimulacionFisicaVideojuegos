@@ -37,6 +37,9 @@ protected:
 	double remainingTime;	
 
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
+
+private:
+	void setUpParticle(int radius);
 };
 
 //--------------------------------------------------------------------------------------------

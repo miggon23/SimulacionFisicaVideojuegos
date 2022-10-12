@@ -1,17 +1,13 @@
 #include "Particle.h"
+#include <random>
 
 Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d = 1) : vel_(vel), pose(pos), acceleration(ac), dumping(d)
 {
-	auto s = CreateShape(physx::PxSphereGeometry(1));
-	//renderItem = std::make_unique<RenderItem(s, &pose, color)>;
-	renderItem = new RenderItem(s, &pose, color);
-	
-
+	setUpParticle(1);
 }
 
 Particle::Particle(Vector3 pos, Vector3 dir,float radius): pose(pos){
-	auto s = CreateShape(physx::PxSphereGeometry(radius));
-	renderItem = new RenderItem(s, &pose, color);
+	setUpParticle(radius);
 }
 
 
@@ -29,6 +25,10 @@ void Particle::integrate(double t)
 
 	pose.p += vel_ * t + 0.5 * acceleration * t;
 
+	remainingTime -= t;			//	SEGUNDOS
+	if (remainingTime <= 0)
+		setAlive(false);
+
 	if (!changingColor)
 		return;
 
@@ -43,6 +43,18 @@ void Particle::integrate(double t)
 Particle* Particle::clone() const
 {
 	return nullptr;
+}
+
+void Particle::setUpParticle(int radius)
+{
+	auto s = CreateShape(physx::PxSphereGeometry(radius));
+	renderItem = new RenderItem(s, &pose, color);
+
+	std::random_device rd{};
+	std::mt19937 gen{ rd() };
+
+	std::normal_distribution<> dNorm{ 6,2.5 };
+	remainingTime = dNorm(gen); //El tiempo de vida sigue una distribución normal
 }
 
 //------------------------------------------

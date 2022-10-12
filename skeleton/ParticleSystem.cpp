@@ -5,8 +5,9 @@
 ParticleSystem::ParticleSystem() : listP(0)
 {
 	//Generador uniforme con velocidades dispersas pero con la posicion muy homogenes en el origen
-	_particle_generators.push_back(new UniformParticleGenerator({ 2.0, 3.0, 3.0 }, { 1.0, 1.0, 1.0 }));
-	_particle_generators.push_back(new GaussianParticleGenerator());
+	_particle_generators.push_back(new UniformParticleGenerator({ 6.0, 3.0, 6.0 }, { 1.0, 1.0, 1.0 }));
+	//Generador con los mismos parámetros per con distribucion uniforme
+	_particle_generators.push_back(new GaussianParticleGenerator({ 6.0, 3.0, 6.0 }, { 1.0, 1.0, 1.0 }, 2.0));
 }
 
 ParticleSystem::~ParticleSystem()
