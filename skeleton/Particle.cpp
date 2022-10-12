@@ -40,6 +40,11 @@ void Particle::integrate(double t)
 	renderItem->color.z = a;
 }
 
+Particle* Particle::clone() const
+{
+	return nullptr;
+}
+
 //------------------------------------------
 
 Proyectil::Proyectil(Vector3 pos, Vector3 dir, ProyType tipo, float r) : Particle(pos, dir, r)

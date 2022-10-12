@@ -42,6 +42,7 @@ float radiud;
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
+	srand(time(NULL));
 	PX_UNUSED(interactive);
 
 	gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
@@ -104,13 +105,14 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 	DeregisterRenderItem(renderItemPlano);
+	delete pSys;
 }
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
-
+	ParticleGenerator* pG = nullptr;
 	switch(toupper(key))
 	{
 	//case 'B': break;
@@ -126,6 +128,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case '2':
 		pSys->changeParticleType(SNOW_BALL);
+		break;
+	case 'F':
+		pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
+		for (auto p : pG->generateParticles())
+			pSys->addParticle(p);
 		break;
 	default:
 		break;

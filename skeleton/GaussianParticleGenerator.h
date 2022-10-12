@@ -7,7 +7,7 @@ private:
     Vector3 std_dev_pos, std_dev_vel;
     double std_dev_t;
 public:
-
-    virtual std::list<Particle*> generateParticles();
+    GaussianParticleGenerator();
+    virtual std::list<Particle*> generateParticles() override;
 };
 

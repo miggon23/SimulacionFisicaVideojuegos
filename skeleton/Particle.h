@@ -23,17 +23,20 @@ public:
 
 	inline bool isAlive() { return alive; };
 
+	virtual Particle* clone() const;
+
 protected:
-	Vector3 vel_;
-	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
+	Vector3 vel_, acceleration;
 	RenderItem* renderItem = nullptr;
 	Vector4 color = Vector4(0.5f, 0.5f, 0.5f, 1);
 	int colorDir = 1;
 
-	Vector3 acceleration;
 	float dumping = 1;
 	bool changingColor = false;
 	bool alive = true;
+	double remainingTime;	
+
+	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
 };
 
 //--------------------------------------------------------------------------------------------

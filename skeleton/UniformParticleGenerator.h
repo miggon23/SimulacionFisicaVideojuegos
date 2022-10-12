@@ -4,8 +4,10 @@ class UniformParticleGenerator :
     public ParticleGenerator
 {
 private:
-    Vector3 _vel_width, _pos_width;
+    Vector3 _vel_width{ 0.0, 0.0, 0.0 }, _pos_width{0.0, 0.0, 0.0};
 public:
-    virtual std::list<Particle*> generateParticles();
+    UniformParticleGenerator();
+    UniformParticleGenerator(Vector3 velW, Vector3 posW);
+    virtual std::list<Particle*> generateParticles() override;
 };  
 

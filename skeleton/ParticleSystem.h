@@ -14,7 +14,9 @@ public:
 
 	void update(double t);
 	void addParticle(Vector3 pos, Vector3 dir);
+	void addParticle(Particle* model);
 	inline void changeParticleType(ProyType pT) { pType = pT; };
+	inline void addParticlesFromList(std::list<Particle*> l) { listP.merge(l); };
 
 	ParticleGenerator* getParticleGenerator(std::string name);
 
