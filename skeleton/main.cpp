@@ -86,6 +86,9 @@ void stepPhysics(bool interactive, double t)
 		p->integrate(t);
 	}*/
 	pSys->update(t);
+	/*auto pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
+	for (auto p : pG->generateParticles())
+		pSys->addParticle(p);*/
 }
 
 // Function to clean data
@@ -119,7 +122,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case 'B':
 	{
-		auto cam = GetCamera();
+		auto cam = GetCamera(); 
 		pSys->addParticle(cam->getEye(), cam->getDir());
 		break;
 	}

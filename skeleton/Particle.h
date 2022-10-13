@@ -7,7 +7,7 @@
 class Particle
 {
 public:
-	Particle(Vector3 pos, Vector3 vel, Vector3 ac, float d);
+	Particle(Vector3 pos, Vector3 vel, Vector3 ac, Vector4 col, float d, float rTime);
 	Particle(Vector3 pos, Vector3 dir, float radius);
 	~Particle();
 
@@ -19,11 +19,14 @@ public:
 	inline void setPos(Vector3 pos) { pose.p = pos; };
 	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
 	inline void setAlive(bool b) { alive = b; };
+	inline void setRemainingTime(float t) { remainingTime = t; };
 	inline Vector3 getPos() { return pose.p; };
 
 	inline bool isAlive() { return alive; };
 
 	virtual Particle* clone() const;
+
+	inline float getRemainingTime() { return remainingTime; };
 
 protected:
 	Vector3 vel_, acceleration;

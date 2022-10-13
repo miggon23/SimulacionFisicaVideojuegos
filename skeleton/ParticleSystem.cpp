@@ -29,7 +29,7 @@ void ParticleSystem::update(double t)
 {
 	for (auto p : listP) {
 		p->integrate(t);
-		if (p->getPos().y <= -0)
+		if (p->getRemainingTime() <= 0 || p->getPos().y <= -0)
 			p->setAlive(false);		
 	}
 

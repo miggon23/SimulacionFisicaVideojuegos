@@ -12,13 +12,16 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
     std::random_device rd{};
     std::mt19937 gen{ rd() };
 
+    //POSICION INICIAL
     std::normal_distribution<> dNormXpos{ _mean_pos.x, std_dev_pos.x };
     std::normal_distribution<> dNormYpos{ _mean_pos.y, std_dev_pos.y };
     std::normal_distribution<> dNormZpos{ _mean_pos.z, std_dev_pos.z };
-    
+    //VELOCIDAD INICIAL
     std::normal_distribution<> dNormXvel{ _mean_vel.x, std_dev_vel.x };
     std::normal_distribution<> dNormYvel{ _mean_vel.y, std_dev_vel.y };
     std::normal_distribution<> dNormZvel{ _mean_vel.z, std_dev_vel.z };
+    //TIEMPO DE VIDA
+    std::normal_distribution<> dNormTime{ 4, std_dev_t };
 
     Vector3 pos, vel;
     std::list<Particle*> list = std::list<Particle*>();
@@ -29,7 +32,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
             //Generar partícula
             pos.x = dNormXpos(gen);	pos.y = dNormYpos(gen);	pos.z = dNormZpos(gen);
             vel.x = dNormXvel(gen);	vel.y = dNormYvel(gen);	vel.z = dNormZvel(gen);
-            list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, 0.999));
+            list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
         }
     }
 
