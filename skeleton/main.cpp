@@ -11,6 +11,7 @@
 #include "Particle.h"
 #include "ParticleSystem.h"
 #include <vector>
+#include "GaussianParticleGenerator.h"
 
 #include <iostream>
 
@@ -116,6 +117,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 	ParticleGenerator* pG = nullptr;
+	GaussianParticleGenerator* pGG = nullptr;
 	switch(toupper(key))
 	{
 	//case 'B': break;
@@ -142,6 +144,14 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		for (auto p : pG->generateParticles())
 			pSys->addParticle(p);*/
 		pSys->activateGenerator("NORMAL_GENERATOR");
+		break;
+	case 'O':
+		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
+		pGG->setDevVel(pGG->getDevVel() + Vector3{0.1, 0.0, 0.1});
+		break;
+	case 'P':
+		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
+		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.1, 0.0, 0.1 });
 		break;
 	default:
 		break;
