@@ -1,12 +1,7 @@
 #include "UniformParticleGenerator.h"
 #include <random>
 
-UniformParticleGenerator::UniformParticleGenerator() : ParticleGenerator("UNIFORM_GENERATOR")
-{
-
-}
-
-UniformParticleGenerator::UniformParticleGenerator(Vector3 velW, Vector3 posW) : ParticleGenerator("UNIFORM_GENERATOR"), 
+UniformParticleGenerator::UniformParticleGenerator(Vector3 posW, Vector3 velW, Vector3 posM, Vector3 velM, int nPart) : ParticleGenerator("UNIFORM_GENERATOR", posM, velM, nPart),
 																				_pos_width(posW), _vel_width(velW)
 {
 	
@@ -26,7 +21,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 	std::uniform_real_distribution<> std_dis_velY(_mean_vel.y - _vel_width.y / 2, _mean_vel.y + _vel_width.y / 2);
 	std::uniform_real_distribution<> std_dis_velZ(_mean_vel.z - _vel_width.z / 2, _mean_vel.z + _vel_width.z / 2);
 	//TIEMPO DE VIDA
-	std::uniform_real_distribution<> std_dis_time(3, 6);
+	std::uniform_real_distribution<> std_dis_time(8, 20);
 
 	Vector3 pos, vel;
 	std::list<Particle*> list = std::list<Particle*>();
@@ -37,7 +32,14 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 			//Generar partícula
 			pos.x = std_dis_posX(gen);	pos.y = std_dis_posY(gen);	pos.z = std_dis_posZ(gen);
 			vel.x = std_dis_velX(gen);	vel.y = std_dis_velY(gen);	vel.z = std_dis_velZ(gen);
-			list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.0, 0.6, 1.0 }, 0.999, std_dis_time(gen)));
+			//list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.0, 0.6, 1.0 }, 0.999, std_dis_time(gen)));
+			auto p = _model->clone();
+			p->setPos(pos);
+			p->setVel(vel);
+			p->setRemainingTime(std_dis_time(gen));
+			p->setChangingColor(true);
+			list.push_back(p);
+
 		}
 	}
     return list;

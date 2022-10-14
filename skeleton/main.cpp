@@ -138,9 +138,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			pSys->addParticle(p);
 		break;
 	case 'G':
-		pG = pSys->getParticleGenerator("NORMAL_GENERATOR");
+		/*pG = pSys->getParticleGenerator("NORMAL_GENERATOR");
 		for (auto p : pG->generateParticles())
-			pSys->addParticle(p);
+			pSys->addParticle(p);*/
+		pSys->activateGenerator("NORMAL_GENERATOR");
 		break;
 	default:
 		break;

@@ -1,11 +1,11 @@
 #include "Particle.h"
 #include <random>
 
-Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac,Vector4 col, float d = 1, float rTime = 3) : 
+Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac,Vector4 col, float d = 1, float rTime = 5) : 
 																				vel_(vel), pose(pos), acceleration(ac), 
 																				dumping(d), remainingTime(rTime), color(col)
 {
-	setUpParticle(1);
+	setUpParticle(0.4);
 }
 
 Particle::Particle(Vector3 pos, Vector3 dir,float radius): pose(pos){
@@ -33,19 +33,21 @@ void Particle::integrate(double t)
 		return;
 
 	//Cambio de color
-	float a = renderItem->color.x + (0.0002 * colorDir);
+	float a = renderItem->color.x + (0.0004 * colorDir);
 	if (a >= 1 || a <= 0)
 		colorDir *= -1;
 	renderItem->color.x = a;
-	renderItem->color.z = a;
+	renderItem->color.y = a;
+	/*if (a > )
+	renderItem->color.z = a;*/
 }
 
 Particle* Particle::clone() const
 {
-	return nullptr;
+	return new Particle(pose.p, vel_, acceleration, renderItem->color, dumping, remainingTime);
 }
 
-void Particle::setUpParticle(int radius)
+void Particle::setUpParticle(float radius)
 {
 	auto s = CreateShape(physx::PxSphereGeometry(radius));
 	renderItem = new RenderItem(s, &pose, color);

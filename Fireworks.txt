@@ -1,0 +1,2 @@
+Dinamic Cast para inferir el tipo de partícula.
+Sumar posicion y velocidad a las particulas creadas a partir del firework.

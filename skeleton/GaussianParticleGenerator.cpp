@@ -1,7 +1,8 @@
 #include "GaussianParticleGenerator.h"
 #include <random>
 
-GaussianParticleGenerator::GaussianParticleGenerator(Vector3 dvVel, Vector3 dvPos, double dvT) : ParticleGenerator("NORMAL_GENERATOR"),
+GaussianParticleGenerator::GaussianParticleGenerator(Vector3 dvPos, Vector3 dvVel, double dvT, Vector3 posM, Vector3 velM, int nPart) :
+                                                                                                 ParticleGenerator("NORMAL_GENERATOR", posM, velM, nPart),
                                                                                                  std_dev_pos(dvPos), std_dev_vel(dvVel), std_dev_t(dvT)
 {
 
@@ -32,7 +33,12 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
             //Generar partícula
             pos.x = dNormXpos(gen);	pos.y = dNormYpos(gen);	pos.z = dNormZpos(gen);
             vel.x = dNormXvel(gen);	vel.y = dNormYvel(gen);	vel.z = dNormZvel(gen);
-            list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
+            //list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
+            auto p = _model->clone();
+            p->setPos(pos);
+            p->setVel(vel);
+            p->setRemainingTime(dNormTime(gen));
+            list.push_back(p);
         }
     }
 

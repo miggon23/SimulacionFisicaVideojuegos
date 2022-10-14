@@ -20,6 +20,7 @@ public:
 	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
 	inline void setAlive(bool b) { alive = b; };
 	inline void setRemainingTime(float t) { remainingTime = t; };
+	inline void setChangingColor(bool b) { changingColor = b; };
 	inline Vector3 getPos() { return pose.p; };
 
 	inline bool isAlive() { return alive; };
@@ -42,7 +43,7 @@ protected:
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
 
 private:
-	void setUpParticle(int radius);
+	void setUpParticle(float radius);
 };
 
 //--------------------------------------------------------------------------------------------
@@ -52,6 +53,8 @@ class Firework : public Particle {
 	float age;
 
 	Firework();
+public:
+	void explode();
 };
 
 struct Payload {
