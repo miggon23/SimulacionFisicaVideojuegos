@@ -26,6 +26,11 @@ public:
 	ParticleGenerator* addParticleGenerator(ParticleGenerator* pG);
 	ParticleGenerator* getParticleGenerator(std::string name);
 
+	inline void setGeneratorToFollowCamera(bool b) { activeGeneratorFollowCamera = b; };
+	inline bool getGeneratorFollowCamera() { return activeGeneratorFollowCamera; };
+
 	void generateFireworkSystem();
+protected:
+	bool activeGeneratorFollowCamera;
 };
 

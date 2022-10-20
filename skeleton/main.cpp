@@ -134,7 +134,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '2':
 		pSys->changeParticleType(SNOW_BALL);
 		break;
-	case 'F':
+	case 'Z':
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0); //BackgroundColor
+		break;
+	case 'X':
+		glClearColor(0.4f, 0.5f, 0.6f, 1.0); //BackgroundColor
+		break;
+	case 'U':
 		pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
 		for (auto p : pG->generateParticles())
 			pSys->addParticle(p);
@@ -145,13 +151,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			pSys->addParticle(p);*/
 		pSys->activateGenerator("NORMAL_GENERATOR");
 		break;
+	case 'F':
+		pSys->setGeneratorToFollowCamera(!pSys->getGeneratorFollowCamera());
 	case 'O':
 		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
-		pGG->setDevVel(pGG->getDevVel() + Vector3{0.1, 0.0, 0.1});
+		pGG->setDevVel(pGG->getDevVel() + Vector3{0.15, 0.0, 0.15});
 		break;
 	case 'P':
 		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
-		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.1, 0.0, 0.1 });
+		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });
 		break;
 	default:
 		break;

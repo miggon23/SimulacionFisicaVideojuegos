@@ -2,15 +2,16 @@
 #include "UniformParticleGenerator.h"
 #include "GaussianParticleGenerator.h"
 
-ParticleSystem::ParticleSystem() : listP(0)
+ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 {
 	//Generador uniforme con velocidades dispersas pero con la posicion muy homogenes en el origen
 	//_particle_generators.push_back(new UniformParticleGenerator({ 6.0, 3.0, 6.0 }, { 1.0, 1.0, 1.0 }));
-	auto p = addParticleGenerator(new UniformParticleGenerator({ 300.0, 150.0, 300.0 }, { 1.0, 1.0, 1.0 }, { 0.0, 80.0, 0.0 }, {0.0, 0.0, 0.0}, 16));
-	p->setParticle(new Particle({ 0.0, 20000.0, 0.0 }, {0.0, 0.0, 0.0}, { 0.0, 0.0, 0.0 }, { 1.0, 1.0, 0.0, 1.0 }, 0.999, 0));
+	auto p = addParticleGenerator(new UniformParticleGenerator({ 300.0, 150.0, 300.0 }, { 1.0, 1.0, 1.0 }, { 0.0, 80.0, 0.0 }, {0.0, 0.0, 0.0}, 20));
+	p->setParticle(new Particle({ 0.0, 20000.0, 0.0 }, {0.0, 0.0, 0.0}, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.999, 0));
 	//Generador con los mismos parámetros per con distribucion uniforme
 	p = addParticleGenerator(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 2.0, 3.0 }, 2.0, GetCamera()->getEye(), GetCamera()->getDir() * 20, 2));
 	p->setParticle(new Particle({ 0.0, 20000.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, 0));
+
 
 }
 
@@ -52,8 +53,10 @@ void ParticleSystem::update(double t)
 		auto lP = activeGenerator->generateParticles();
 		for (auto particle : lP)
 			listP.push_back(particle);
-		activeGenerator->setMeanPos(GetCamera()->getEye() + GetCamera()->getDir() * 3);
-		activeGenerator->setMeanVel(GetCamera()->getDir() * 30);
+		if (activeGeneratorFollowCamera) {
+			activeGenerator->setMeanPos(GetCamera()->getEye() + GetCamera()->getDir() * 3);
+			activeGenerator->setMeanVel(GetCamera()->getDir() * 40);
+		}
 	}
 }
 

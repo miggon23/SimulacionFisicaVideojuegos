@@ -3,6 +3,9 @@
 #include <PxPhysicsAPI.h>
 #include "RenderUtils.hpp"
 #include <ctype.h>
+#include <list>
+#include <memory>
+#include "ParticleGenerator.h"
 
 class Particle
 {
@@ -39,7 +42,7 @@ protected:
 	bool changingColor = false;
 	bool alive = true;
 	double remainingTime;	
-
+	float masa;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
 
 private:
@@ -49,12 +52,15 @@ private:
 //--------------------------------------------------------------------------------------------
 
 class Firework : public Particle {
-	unsigned type;
-	float age;
-
-	Firework();
+	//unsigned type;
+	int age; //edad del firework, si es 0 no se generan más
+	//std::list <shared_ptr ParticleGenerator> _gens;
 public:
-	void explode();
+	Firework(Vector3 pos, Vector3 dir, float radius, int a);
+
+	virtual Particle* clone() const;
+
+	std::list<Particle* >explode();
 };
 
 struct Payload {
@@ -96,7 +102,7 @@ public:
 	Proyectil(Vector3 pos, Vector3 dir, ProyType tipo, float radius);
 
 private:
-	float masa;
+
 	const float PAINT_VEL = 45;     //90 m/s en la realidad, 2.5 grm
 	const float PAPER_VEL = 12.0;
 };

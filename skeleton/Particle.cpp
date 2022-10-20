@@ -24,7 +24,6 @@ void Particle::integrate(double t)
 		return;
 
 	vel_ = vel_ * pow(dumping, t) + acceleration * t;
-
 	pose.p += vel_ * t + 0.5 * acceleration * t;
 
 	remainingTime -= t;			//	SEGUNDOS	
@@ -33,8 +32,8 @@ void Particle::integrate(double t)
 		return;
 
 	//Cambio de color
-	float a = renderItem->color.x + (0.0004 * colorDir);
-	if (a >= 1 || a <= 0)
+	float a = renderItem->color.x + (0.0005 * colorDir);
+	if (a >= 0.8 || a <= 0.02)
 		colorDir *= -1;
 	renderItem->color.x = a;
 	renderItem->color.y = a;
@@ -85,3 +84,23 @@ Proyectil::Proyectil(Vector3 pos, Vector3 dir, ProyType tipo, float r) : Particl
 	
 }
 
+Firework::Firework(Vector3 pos, Vector3 dir, float radius, int a) : Particle(pos, dir, radius), age(a)
+{
+	
+}
+
+Particle* Firework::clone() const
+{
+	return nullptr;
+}
+
+std::list<Particle*> Firework::explode()
+{
+	
+	//Si no quedan más ciclos de explosión, devolvemos lista vacía
+	if (age == 0)
+		return std::list<Particle*>();
+	//Generar partículas
+	std::list<Particle*> l = std::list<Particle*>();
+	return l;
+}
