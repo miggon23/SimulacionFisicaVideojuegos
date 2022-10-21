@@ -5,8 +5,10 @@
 #include <ctype.h>
 #include <list>
 #include <memory>
-#include "ParticleGenerator.h"
 
+class ParticleGenerator;
+
+using namespace std;
 class Particle
 {
 public:
@@ -14,9 +16,10 @@ public:
 	Particle(Vector3 pos, Vector3 dir, float radius);
 	~Particle();
 
-	void integrate(double t);
+	virtual void integrate(double t);
 
-	inline void setVel(Vector3 v) { vel_ = v; };
+	inline void setVel(Vector3 v) { _vel = v; };
+	inline Vector3 getVel() { return _vel; };
 	inline void setDumping(float d) { dumping = d; };
 	inline void setAcc(Vector3 ac) { acceleration = ac; };
 	inline void setPos(Vector3 pos) { pose.p = pos; };
@@ -33,7 +36,7 @@ public:
 	inline float getRemainingTime() { return remainingTime; };
 
 protected:
-	Vector3 vel_, acceleration;
+	Vector3 _vel, acceleration;
 	RenderItem* renderItem = nullptr;
 	Vector4 color = Vector4(0.5f, 0.5f, 0.5f, 1);
 	int colorDir = 1;
@@ -43,6 +46,7 @@ protected:
 	bool alive = true;
 	double remainingTime;	
 	float masa;
+	float _radius;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
 
 private:
@@ -54,42 +58,45 @@ private:
 class Firework : public Particle {
 	//unsigned type;
 	int age; //edad del firework, si es 0 no se generan más
-	//std::list <shared_ptr ParticleGenerator> _gens;
+	list <shared_ptr <ParticleGenerator *>> _gens;
 public:
 	Firework(Vector3 pos, Vector3 dir, float radius, int a);
-
+	~Firework() = default;
+	virtual void integrate(double t) override;
 	virtual Particle* clone() const;
+
+	inline void addGenerator(shared_ptr<ParticleGenerator*> pG) { _gens.push_back(pG); };
 
 	std::list<Particle* >explode();
 };
 
-struct Payload {
-	//Type of firework to create
-	unsigned type;
-
-	unsigned count;
-
-	void set(unsigned _type, unsigned _count)
-	{
-		type = _type;
-		count = _count;
-	}
-};
-
-struct FireworkRule {
-	//Type of firework configured
-	unsigned type;
-
-	float minAge;
-	float maxAge;
-
-	//Minimun relative velocity
-	Vector3 minVelocity;
-
-	float dumping;
-
-	std::vector<Payload> payloads;
-};
+//struct Payload {
+//	//Type of firework to create
+//	unsigned type;
+//
+//	unsigned count;
+//
+//	void set(unsigned _type, unsigned _count)
+//	{
+//		type = _type;
+//		count = _count;
+//	}
+//};
+//
+//struct FireworkRule {
+//	//Type of firework configured
+//	unsigned type;
+//
+//	float minAge;
+//	float maxAge;
+//
+//	//Minimun relative velocity
+//	Vector3 minVelocity;
+//
+//	float dumping;
+//
+//	std::vector<Payload> payloads;
+//};
 
 //--------------------------------------
 

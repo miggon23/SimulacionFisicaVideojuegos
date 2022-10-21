@@ -10,8 +10,8 @@ protected:
 	std::string _name;
 	Vector3 _mean_pos, _mean_vel;
 	double _generation_prob;
-	int _num_particles = 6;
-	Particle* _model;
+	int _num_particles;
+	Particle* _model = nullptr;
 public:
 	ParticleGenerator(std::string nombre, Vector3 velM, Vector3 posM, int nPart);
 	~ParticleGenerator();
@@ -21,5 +21,6 @@ public:
 	virtual std::list<Particle*> generateParticles() = 0;
 
 	inline std::string getGeneratorName() { return _name; };
+	inline void setGeneratorName(std::string s) { _name = s; };
 };
 

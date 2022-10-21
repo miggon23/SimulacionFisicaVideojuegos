@@ -7,6 +7,7 @@ class ParticleSystem
 private:
 	ProyType pType = PAINT_BALL;
 	std::list<Particle*> listP;
+	//std::list<Firework*> listF;
 	std::list<ParticleGenerator*> _particle_generators;
 
 	//std::list<ParticleGenerator*> _active_particle_generators;
@@ -22,6 +23,9 @@ public:
 	inline void addParticlesFromList(std::list<Particle*> l) { listP.merge(l); };
 	void activateGenerator(std::string s);
 	void desactivateGenerator();
+
+	void shootFirework(int type = 0);
+	void onParticleDeath(Particle* p);
 
 	ParticleGenerator* addParticleGenerator(ParticleGenerator* pG);
 	ParticleGenerator* getParticleGenerator(std::string name);

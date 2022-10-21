@@ -34,15 +34,19 @@ void ParticleSystem::update(double t)
 {
 	for (auto p : listP) {
 		p->integrate(t);
-		if (p->getRemainingTime() <= 0 || p->getPos().y <= -0)
+		//Intentamos cast dinamico para saber si es un firework
+
+		if (p->getRemainingTime() <= 0 || p->getPos().y <= -0) {
 			p->setAlive(false);		
+			onParticleDeath(p);
+		}
 	}
 
 	auto p = listP.begin();
 	while (p != listP.end()) {
 		if (!(*p)->isAlive()) {
 			delete *p;
-			p = listP.erase(p);
+			p = listP.erase(p);		
 		}
 		else
 			p++;
@@ -67,7 +71,7 @@ void ParticleSystem::addParticle(Vector3 pos, Vector3 dir)
 
 void ParticleSystem::addParticle(Particle* model)
 {
-	listP.push_back(model); //Model o Model.copy() --> Implementar Model.copy()
+	listP.push_back(model);
 }
 
 void ParticleSystem::activateGenerator(std::string s)
@@ -81,6 +85,26 @@ void ParticleSystem::activateGenerator(std::string s)
 void ParticleSystem::desactivateGenerator()
 {
 	//activeGenerator = nullptr;
+}
+
+void ParticleSystem::shootFirework(int type)
+{
+	auto f = new Firework({ 0.0, 50.0, 0.0 }, { 0.0, 48.0, 0.0 }, 0.6, 2);
+	f->setRemainingTime(5);
+	f->setColor({0.2, 0.2, 0.8, 1.0});
+	f->setAcc({ 0.0, -10.0, 0.0 });
+	addParticle(f);
+}
+
+void ParticleSystem::onParticleDeath(Particle * p)
+{
+	Firework* f;
+	f = dynamic_cast<Firework*>(p);
+	if (f != nullptr) {
+		auto l  = f->explode();
+		for (auto firework : l)
+			addParticle(firework);
+	}
 }
 
 ParticleGenerator* ParticleSystem::addParticleGenerator(ParticleGenerator* pG)
@@ -110,4 +134,5 @@ ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name)
 
 void ParticleSystem::generateFireworkSystem()
 {
+
 }

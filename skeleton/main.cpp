@@ -128,6 +128,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		pSys->addParticle(cam->getEye(), cam->getDir());
 		break;
 	}
+	case '0':
+		pSys->shootFirework(0);
+		break;
 	case '1':
 		pSys->changeParticleType(PAINT_BALL);
 		break;
