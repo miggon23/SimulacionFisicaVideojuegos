@@ -22,24 +22,24 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
     std::normal_distribution<> dNormYvel{ _mean_vel.y, std_dev_vel.y };
     std::normal_distribution<> dNormZvel{ _mean_vel.z, std_dev_vel.z };
     //TIEMPO DE VIDA
-    std::normal_distribution<> dNormTime{ 4, std_dev_t };
+    std::normal_distribution<> dNormTime{ meanTime, std_dev_t };
 
     Vector3 pos, vel;
     std::list<Particle*> list = std::list<Particle*>();
     for (int i = 0; i < _num_particles; i++)
     {
-        if ((rand() % 100) < 90) //Probabilidad del 90% de generarse
-        {
-            //Generar partícula
-            pos.x = dNormXpos(gen);	pos.y = dNormYpos(gen);	pos.z = dNormZpos(gen);
-            vel.x = dNormXvel(gen);	vel.y = dNormYvel(gen);	vel.z = dNormZvel(gen);
-            //list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
-            auto p = _model->clone();
-            p->setPos(pos);
-            p->setVel(vel);
-            p->setRemainingTime(dNormTime(gen));
-            list.push_back(p);
-        }
+        //if ((rand() % 100) < 90) //Probabilidad del 90% de generarse
+        //{
+        //Generar partícula
+        pos.x = dNormXpos(gen);	pos.y = dNormYpos(gen);	pos.z = dNormZpos(gen);
+        vel.x = dNormXvel(gen);	vel.y = dNormYvel(gen);	vel.z = dNormZvel(gen);
+        //list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
+        auto p = _model->clone();
+        p->setPos(pos);
+        p->setVel(vel);
+        p->setRemainingTime(dNormTime(gen));
+        list.push_back(p);
+        //}
     }
 
     return list;

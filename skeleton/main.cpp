@@ -116,8 +116,7 @@ void cleanupPhysics(bool interactive)
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
-	ParticleGenerator* pG = nullptr;
-	GaussianParticleGenerator* pGG = nullptr;
+	
 	switch(toupper(key))
 	{
 	//case 'B': break;
@@ -132,10 +131,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		pSys->shootFirework(0);
 		break;
 	case '1':
-		pSys->changeParticleType(PAINT_BALL);
+		//pSys->changeParticleType(PAINT_BALL);
+		pSys->shootFirework(1);
 		break;
 	case '2':
-		pSys->changeParticleType(SNOW_BALL);
+		//pSys->changeParticleType(SNOW_BALL);
+		pSys->shootFirework(2);
+		break;
+	case '3':
+		pSys->shootFirework(3);
 		break;
 	case 'Z':
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0); //BackgroundColor
@@ -144,10 +148,14 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		glClearColor(0.4f, 0.5f, 0.6f, 1.0); //BackgroundColor
 		break;
 	case 'U':
-		pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
-		for (auto p : pG->generateParticles())
+	{
+		auto pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
+		for (auto p : pG->generateParticles()) {
+			p->setChangingColor(true, 0.2);
 			pSys->addParticle(p);
+		}
 		break;
+	}
 	case 'G':
 		/*pG = pSys->getParticleGenerator("NORMAL_GENERATOR");
 		for (auto p : pG->generateParticles())
@@ -156,14 +164,19 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'F':
 		pSys->setGeneratorToFollowCamera(!pSys->getGeneratorFollowCamera());
-	case 'O':
-		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
-		pGG->setDevVel(pGG->getDevVel() + Vector3{0.15, 0.0, 0.15});
 		break;
+	case 'O':
+	{		
+		auto f = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
+		f->setDevVel(f->getDevVel() + Vector3{0.15, 0.0, 0.15});
+		break;
+	}
 	case 'P':
-		pGG = static_cast<GaussianParticleGenerator*>(pSys->getParticleGenerator("NORMAL_GENERATOR"));
+	{
+		auto pGG = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
 		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });
 		break;
+	}
 	default:
 		break;
 	}

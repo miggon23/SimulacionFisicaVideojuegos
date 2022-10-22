@@ -7,11 +7,13 @@ class ParticleSystem
 private:
 	ProyType pType = PAINT_BALL;
 	std::list<Particle*> listP;
-	//std::list<Firework*> listF;
-	std::list<ParticleGenerator*> _particle_generators;
+
+	std::vector<Firework*> _firework_pool;
+	std::list<shared_ptr<ParticleGenerator>> _particle_generators;
 
 	//std::list<ParticleGenerator*> _active_particle_generators;
-	ParticleGenerator* activeGenerator = nullptr;
+	shared_ptr<ParticleGenerator> activeGenerator = nullptr;
+	Vector3 _gravity{0.0, -10.0, 0.0};
 public:
 	ParticleSystem();
 	~ParticleSystem();
@@ -27,8 +29,8 @@ public:
 	void shootFirework(int type = 0);
 	void onParticleDeath(Particle* p);
 
-	ParticleGenerator* addParticleGenerator(ParticleGenerator* pG);
-	ParticleGenerator* getParticleGenerator(std::string name);
+	void addParticleGenerator(shared_ptr<ParticleGenerator> pG);
+	shared_ptr<ParticleGenerator> getParticleGenerator(std::string name);
 
 	inline void setGeneratorToFollowCamera(bool b) { activeGeneratorFollowCamera = b; };
 	inline bool getGeneratorFollowCamera() { return activeGeneratorFollowCamera; };

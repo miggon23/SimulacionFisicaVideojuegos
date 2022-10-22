@@ -12,7 +12,7 @@ using namespace std;
 class Particle
 {
 public:
-	Particle(Vector3 pos, Vector3 vel, Vector3 ac, Vector4 col, float d, float rTime);
+	Particle(Vector3 pos, Vector3 vel, Vector3 ac, Vector4 col, float d, float rTime, float tam);
 	Particle(Vector3 pos, Vector3 dir, float radius);
 	~Particle();
 
@@ -26,7 +26,7 @@ public:
 	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
 	inline void setAlive(bool b) { alive = b; };
 	inline void setRemainingTime(float t) { remainingTime = t; };
-	inline void setChangingColor(bool b) { changingColor = b; };
+	inline void setChangingColor(bool b, float timeChange) { changingColor = b; _factorColorChange = timeChange; };
 	inline Vector3 getPos() { return pose.p; };
 
 	inline bool isAlive() { return alive; };
@@ -47,8 +47,9 @@ protected:
 	double remainingTime;	
 	float masa;
 	float _radius;
+	//CUanto va a cambiar de color en cada frame
+	float _factorColorChange;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
-
 private:
 	void setUpParticle(float radius);
 };
@@ -58,14 +59,14 @@ private:
 class Firework : public Particle {
 	//unsigned type;
 	int age; //edad del firework, si es 0 no se generan más
-	list <shared_ptr <ParticleGenerator *>> _gens;
+	list <shared_ptr <ParticleGenerator>> _gens;
 public:
-	Firework(Vector3 pos, Vector3 dir, float radius, int a);
+	Firework(Vector3 pos, Vector3 dir, list<shared_ptr<ParticleGenerator>> lG, float radius, int a);
 	~Firework() = default;
-	virtual void integrate(double t) override;
+	//virtual void integrate(double t) override;
 	virtual Particle* clone() const;
 
-	inline void addGenerator(shared_ptr<ParticleGenerator*> pG) { _gens.push_back(pG); };
+	inline void addGenerator(shared_ptr<ParticleGenerator> pG) { _gens.push_back(pG); };
 
 	std::list<Particle* >explode();
 };

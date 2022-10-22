@@ -37,7 +37,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 			p->setPos(pos);
 			p->setVel(vel);
 			p->setRemainingTime(std_dis_time(gen));
-			p->setChangingColor(true);
+			//p->setChangingColor(true);
 			list.push_back(p);
 
 		}
