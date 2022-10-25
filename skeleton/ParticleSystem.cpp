@@ -19,6 +19,7 @@ ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 
 	generateFireworkSystem();
 
+	//Generador que dispara el primer firework
 	shared_ptr<GaussianParticleGenerator> g3(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 2.0, 3.0 }, 2.0, { 0.0, 10.0, 0.0 }, {0.0 , 50, 0.0}, 1));
 	addParticleGenerator(g3);
 	g3->setMeanTime(4);
@@ -105,19 +106,10 @@ void ParticleSystem::shootFirework(int type)
 	//MODELO
 	auto model = _firework_pool[type]->clone();
 	gen->setParticle(model);
-	/*if(gen != nullptr)
-		model->addGenerator(gen);
-	gen.get()->setParticle(model);*/
 
-	//model->setColor({0.2, 0.2, 0.8, 1.0});
-	//model->setAcc({ 0.0, -10.0, 0.0 });
-	/*Firework* f = dynamic_cast<Firework*>(model->clone());
-	f->setPos({ 0.0, 10.0, 0.0 });
-	f->setVel({ 0.0, 50.0, 0.0 });*/
 	//Asumimos que solo genera una partícula
 	auto p = gen->generateParticles().front();
-	//Aumentamos un segundo su tiempo base de explosión para que dure más en el disparo
-	//p->setRemainingTime(p->getRemainingTime() + 0.8);
+	//Explota después de 5 segundos
 	p->setRemainingTime(5);
 	addParticle(p);
 	
@@ -129,8 +121,7 @@ void ParticleSystem::onParticleDeath(Particle * p)
 	f = dynamic_cast<Firework*>(p);
 	if (f != nullptr) {
 		listP;
-		auto l  = f->explode();
-		for (auto firework : l)
+		for (auto firework : f->explode())
 			addParticle(firework);
 	}
 }
@@ -168,7 +159,7 @@ void ParticleSystem::generateFireworkSystem()
 	_firework_pool.push_back(fBase);
 
 	//Firework 1 --> genera fireworks 0
-	shared_ptr<ParticleGenerator> g2(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 6.0, 6.0, 6.0 }, 0.12, { 0.1, 0.1, 0.1 }, {8.0, 8.0, 8.0}, 7));
+	shared_ptr<ParticleGenerator> g2(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 6.0, 6.0, 6.0 }, 0.12, { 0.1, 0.1, 0.1 }, {8.0, 8.0, 8.0}, 8));
 	g2->setParticle(_firework_pool[0]);
 	g2->setGeneratorName("FireworkGenerator1");
 	g2->setMeanTime(0.8);
@@ -180,7 +171,7 @@ void ParticleSystem::generateFireworkSystem()
 	_firework_pool.push_back(p);
 
 	//Genera Firework 2 y humo
-	shared_ptr<ParticleGenerator> g3(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, {0.0, 12.0, 0.0}, 5));
+	shared_ptr<ParticleGenerator> g3(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, {0.0, 12.0, 0.0}, 6));
 	g3->setParticle(_firework_pool[1]);
 	g3->setGeneratorName("FireworkGenerator2");
 	g3->setMeanTime(1.0);
@@ -189,8 +180,8 @@ void ParticleSystem::generateFireworkSystem()
 	p1->setAcc(_gravity);
 	_firework_pool.push_back(p1);
 
-	//Bola arcoíris Genea verde, morado, rosa (uva, piña, pera)
-	shared_ptr<ParticleGenerator> g4(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 12.0, 0.0 }, 3));
+	//Bola arcoíris, va cambiando de color
+	shared_ptr<ParticleGenerator> g4(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 12.0, 0.0 }, 4));
 	g4->setParticle(_firework_pool[2]);
 	g4->setGeneratorName("FireworkGenerator3");
 	g4->setMeanTime(1.2);
@@ -199,5 +190,16 @@ void ParticleSystem::generateFireworkSystem()
 	p2->setColor({ 0.2, 0.5, 0.3, 1.0 });
 	p2->setAcc(_gravity);
 	_firework_pool.push_back(p2);
+
+	//Ultima bola
+	shared_ptr<ParticleGenerator> g5(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 12.0, 0.0 }, 3));
+	g5->setParticle(_firework_pool[3]);
+	g5->setGeneratorName("FireworkGenerator4");
+	g5->setMeanTime(1.4);
+	auto p3 = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g5, g3 }, 0.8, 2);
+	//p3->setChangingColor(true, 0.55);
+	p3->setColor({ 0.2, 0.6, 0.5, 1.0 });
+	p3->setAcc(_gravity);
+	_firework_pool.push_back(p3);
 
 }

@@ -141,6 +141,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '3':
 		pSys->shootFirework(3);
 		break;
+	case '4':
+		pSys->shootFirework(4);
+		break;
 	case 'Z':
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0); //BackgroundColor
 		break;

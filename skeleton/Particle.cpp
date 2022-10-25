@@ -91,19 +91,6 @@ Firework::Firework(Vector3 pos, Vector3 dir, list<shared_ptr<ParticleGenerator>>
 	
 }
 
-//void Firework::integrate(double t)
-//{
-//	if (!isAlive())
-//		return;
-//
-//	_vel = _vel * pow(dumping, t) + acceleration * t;
-//	pose.p += _vel * t + 0.5 * acceleration * t;
-//
-//	remainingTime -= t;
-//}
-
-
-
 Particle* Firework::clone() const
 {
 	Firework* f = new Firework(pose.p, _vel, _gens,  _radius, age - 1);
@@ -111,31 +98,15 @@ Particle* Firework::clone() const
 	f->setColor(renderItem->color);
 	f->setRemainingTime(remainingTime);
 	f->setChangingColor(changingColor, _factorColorChange);
-	for (auto g : _gens)
-		f->addGenerator(g);
+	//for (auto g : _gens)
+	//	f->addGenerator(g);
 	return f;
 }
 
 std::list<Particle*> Firework::explode()
 {
-	
-	//Si no quedan más ciclos de explosión, devolvemos lista vacía
-	/*if (age <= 0)
-		return std::list<Particle*>();*/
 	//Generar partículas
 	std::list<Particle*> l = std::list<Particle*>();
-	//Vector3 newDir{ 0.0, 0.0, 0.0 };
-	//for (int i = 0; i < 5; i++) {
-	//	newDir.x = rand() % 14;
-	//	newDir.y = rand() % 14;
-	//	newDir.z = rand() % 14;
-	//	auto f = clone();
-	//	f->setVel(f->getVel() + newDir);
-	//	l.push_back(f);
-	//	//RESET LIFE TIMER!!!
-	//	f->setRemainingTime(2);
-	//	
-	//}
 	
 	for (auto g : _gens)
 	{
