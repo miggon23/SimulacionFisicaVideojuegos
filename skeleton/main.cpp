@@ -37,6 +37,7 @@ ContactReportCallback gContactReportCallback;
 //std::vector<Particle*> vParticle;
 ParticleSystem* pSys;
 RenderItem* renderItemPlano;
+RenderItem* renderItemBoxFirework;
 
 float radiud;
 
@@ -71,6 +72,11 @@ void initPhysics(bool interactive)
 	auto s = CreateShape(physx::PxPlaneGeometry());
 	PxTransform pose;
 	renderItemPlano = new RenderItem(CreateShape(PxBoxGeometry(300, 1, 300)), new PxTransform(-100, -2, -100), { 1,1,1,1 });
+	renderItemPlano->color = {0.4, 0.2, 0.1, 1.0};
+
+	renderItemBoxFirework = new RenderItem(CreateShape(PxBoxGeometry(2, 4, 2)), new PxTransform(0, 2, 0), { 1,1,1,1 });
+	renderItemBoxFirework->color = {0.7, 0.7, 0.1, 1.0};
+
 }
 
 
@@ -109,6 +115,7 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 	DeregisterRenderItem(renderItemPlano);
+	DeregisterRenderItem(renderItemBoxFirework);
 	delete pSys;
 }
 
@@ -178,6 +185,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		auto pGG = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
 		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });
+		break;
+	}
+	case 'R':
+	{
+		pSys->activateGenerator("RainGenerator");
 		break;
 	}
 	default:

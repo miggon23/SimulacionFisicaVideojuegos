@@ -25,6 +25,7 @@ ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 	g3->setMeanTime(4);
 	g3->setGeneratorName("FireworkShooterGenerator");
 
+
 }
 
 ParticleSystem::~ParticleSystem()
@@ -68,10 +69,10 @@ void ParticleSystem::update(double t)
 		auto lP = activeGenerator->generateParticles();
 		for (auto particle : lP)
 			listP.push_back(particle);
-		if (activeGeneratorFollowCamera) {
+		/*if (activeGeneratorFollowCamera) {
 			activeGenerator->setMeanPos(GetCamera()->getEye() + GetCamera()->getDir() * 3);
 			activeGenerator->setMeanVel(GetCamera()->getDir() * 40);
-		}
+		}*/
 	}
 }
 
@@ -148,10 +149,10 @@ void ParticleSystem::generateFireworkSystem()
 
 
 	//Firewrok cero, solo genera humillo
-	shared_ptr<ParticleGenerator> g1(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 1.0, 2.0, 1.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 18.0, 0.0 }, 4));
+	shared_ptr<ParticleGenerator> g1(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 1.0, 2.0, 1.0 }, 0.1, { 0.1, 0.1, 0.1 }, { 0.0, 18.0, 0.0 }, 4));
 	g1->setParticle(pHumo);
 	g1->setGeneratorName("BaseFireworkGenerator");
-	g1->setMeanTime(0.4);
+	g1->setMeanTime(0.2);
 	addParticleGenerator(g1);
 	auto fBase = new Firework({ -10000.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g1 }, 0.2, 2);
 	fBase->setAcc(_gravity);
@@ -159,10 +160,10 @@ void ParticleSystem::generateFireworkSystem()
 	_firework_pool.push_back(fBase);
 
 	//Firework 1 --> genera fireworks 0
-	shared_ptr<ParticleGenerator> g2(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 6.0, 6.0, 6.0 }, 0.12, { 0.1, 0.1, 0.1 }, {8.0, 8.0, 8.0}, 8));
+	shared_ptr<ParticleGenerator> g2(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 6.0, 6.0, 6.0 }, 0.1, { 0.1, 0.1, 0.1 }, {8.0, 8.0, 8.0}, 8));
 	g2->setParticle(_firework_pool[0]);
 	g2->setGeneratorName("FireworkGenerator1");
-	g2->setMeanTime(0.8);
+	g2->setMeanTime(0.3);
 	addParticleGenerator(g2);
 	auto p = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g2, g1 }, 0.3, 2);
 	//p->setChangingColor(true);
@@ -171,10 +172,10 @@ void ParticleSystem::generateFireworkSystem()
 	_firework_pool.push_back(p);
 
 	//Genera Firework 2 y humo
-	shared_ptr<ParticleGenerator> g3(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, {0.0, 12.0, 0.0}, 6));
+	shared_ptr<ParticleGenerator> g3(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.1, { 0.1, 0.1, 0.1 }, {0.0, 12.0, 0.0}, 6));
 	g3->setParticle(_firework_pool[1]);
 	g3->setGeneratorName("FireworkGenerator2");
-	g3->setMeanTime(1.0);
+	g3->setMeanTime(0.4);
 	auto p1 = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g3 }, 0.4, 2);
 	p1->setColor({ 0.2, 0.5, 0.2, 1.0 });
 	p1->setAcc(_gravity);
@@ -184,7 +185,7 @@ void ParticleSystem::generateFireworkSystem()
 	shared_ptr<ParticleGenerator> g4(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 12.0, 0.0 }, 4));
 	g4->setParticle(_firework_pool[2]);
 	g4->setGeneratorName("FireworkGenerator3");
-	g4->setMeanTime(1.2);
+	g4->setMeanTime(0.5);
 	auto p2 = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g4, g2 }, 0.6, 2);
 	p2->setChangingColor(true, 0.4);
 	p2->setColor({ 0.2, 0.5, 0.3, 1.0 });
@@ -195,11 +196,31 @@ void ParticleSystem::generateFireworkSystem()
 	shared_ptr<ParticleGenerator> g5(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 8.0, 8.0, 8.0 }, 0.12, { 0.1, 0.1, 0.1 }, { 0.0, 12.0, 0.0 }, 3));
 	g5->setParticle(_firework_pool[3]);
 	g5->setGeneratorName("FireworkGenerator4");
-	g5->setMeanTime(1.4);
+	g5->setMeanTime(0.6);
 	auto p3 = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { g5, g3 }, 0.8, 2);
 	//p3->setChangingColor(true, 0.55);
 	p3->setColor({ 0.2, 0.6, 0.5, 1.0 });
 	p3->setAcc(_gravity);
 	_firework_pool.push_back(p3);
 
+	//---------------------Rain Generator
+	//Chispeo, duran muy pocos segundos
+	auto pChispeo = new Particle({ -10000.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { 0.3, 0.2, 0.2, 0.8 }, 0.999, 1, 0.2);
+	pChispeo->setColor({ 0.1, 0.6, 0.8, 1.0 });;
+	shared_ptr<GaussianParticleGenerator> gChispeo(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 1.0, 3.0 }, 0.1, { 0.0, 0.0, 0.0 }, { 0.0 , 0.0, 0.0 }, 5));
+	addParticleGenerator(gChispeo);
+	gChispeo->setParticle(pChispeo);
+	gChispeo->setMeanTime(0.2);
+	gChispeo->setGeneratorName("ChispeoGenerator");
+
+	auto pGota = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { gChispeo }, 0.4, 2);
+	pGota->setColor({ 0.1, 0.6, 0.8, 1.0 });
+	pGota->setAcc(_gravity);
+	pGota->setDumping(0.8);
+
+	shared_ptr<GaussianParticleGenerator> gRain(new GaussianParticleGenerator({ 80.0, 0.1, 80.0 }, { 8.0, 0.8, 8.0 }, 2.0, { 0.1, 400.0, 0.1 }, { 0.0 , -50.0, 0.0 }, 3));
+	addParticleGenerator(gRain);
+	gRain->setParticle(pGota);
+	gRain->setMeanTime(20);
+	gRain->setGeneratorName("RainGenerator");
 }

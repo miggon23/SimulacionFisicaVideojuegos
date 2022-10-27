@@ -110,9 +110,19 @@ std::list<Particle*> Firework::explode()
 	
 	for (auto g : _gens)
 	{
-		g->setMeanPos(pose.p);
-		//Hay que añadirle la velocidad que llevaba la partícula que se destruyó
-		g->setMeanVel(_vel);
+		//Si choca contra el suelo
+		if (pose.p.y <= 0) {
+			Vector3 nMPos = Vector3(pose.p.x, 0.5, pose.p.z);
+			g->setMeanPos(nMPos);
+			//Hacemos que rebote con una velocidad comtraria en el eje y
+			Vector3 nMVel = Vector3(_vel.x, -_vel.y * 0.2, _vel.z);
+			g->setMeanVel(nMVel);
+		}
+		else {
+			g->setMeanPos(pose.p);
+			//Hay que añadirle la velocidad que llevaba la partícula que se destruyó
+			g->setMeanVel(_vel);
+		}
 		for (auto c : g.get()->generateParticles()) {
 			l.push_back(c);
 		}
