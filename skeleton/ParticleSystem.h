@@ -5,7 +5,7 @@
 class ParticleSystem
 {
 private:
-	const unsigned int LIMIT_NUM_PARTICLE = 5000;
+	const unsigned int LIMIT_NUM_PARTICLE = 10000;
 
 	ProyType pType = PAINT_BALL;
 	std::list<Particle*> listP;

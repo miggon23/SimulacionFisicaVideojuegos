@@ -177,14 +177,20 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'O':
 	{		
-		auto f = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
-		f->setDevVel(f->getDevVel() + Vector3{0.15, 0.0, 0.15});
+		/*auto f = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
+		f->setDevVel(f->getDevVel() + Vector3{0.15, 0.0, 0.15});*/
+		auto f = pSys->getParticleGenerator("RainGenerator");
+		f->setMeanVel(f->getMeanVel() - Vector3{ 0.0, 1.5, 0.0 });
+		f->setNParticles(f->getNParticles() + 1);
 		break;
 	}
 	case 'P':
 	{
-		auto pGG = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
-		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });
+		/*auto pGG = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
+		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });*/
+		auto f = pSys->getParticleGenerator("RainGenerator");
+		f->setMeanVel(f->getMeanVel() + Vector3{ 0.0, 1.5, 0.0 });
+		f->setNParticles(f->getNParticles() - 1);
 		break;
 	}
 	case 'R':

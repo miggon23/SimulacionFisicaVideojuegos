@@ -224,9 +224,10 @@ void ParticleSystem::generateFireworkSystem()
 
 	//shared_ptr<GaussianParticleGenerator> gRain(new GaussianParticleGenerator({ 80.0, 0.1, 80.0 }, { 8.0, 0.8, 8.0 }, 2.0, { 0.1, 400.0, 0.1 }, { 0.0 , -50.0, 0.0 }, 3));
 	//El generador de lluvia crea partículas a partir de un tamaño medio y desviación típica
-	shared_ptr<GaussianParticleGenerator> gRain(new RainGenerator({ 80.0, 0.1, 80.0 }, { 0.7, 5.0, 0.7 }, 2.0, { 0.1, 400.0, 0.1 }, { 10.0 , -50.0, 0.0 }, 3, 0.4, 0.15));
+	shared_ptr<GaussianParticleGenerator> gRain(new RainGenerator({ 100.0, 0.1, 100.0 }, { 0.7, 5.0, 0.7 }, 2.0, { 0.1, 400.0, 0.1 }, { 10.0 , -60.0, 0.0 }, 4, 0.3, 0.1));
 	addParticleGenerator(gRain);
 	gRain->setParticle(pGota);
 	gRain->setMeanTime(20);
 	gRain->setGeneratorName("RainGenerator");
+	gRain->setLimitOfParticlesPerFrame(20);
 }
