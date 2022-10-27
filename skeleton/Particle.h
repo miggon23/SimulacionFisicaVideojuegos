@@ -32,6 +32,7 @@ public:
 	inline bool isAlive() { return alive; };
 
 	virtual Particle* clone() const;
+	virtual Particle* cloneWithNewRadius(float rad) const;
 
 	inline float getRemainingTime() { return remainingTime; };
 
@@ -65,6 +66,7 @@ public:
 	~Firework() = default;
 	//virtual void integrate(double t) override;
 	virtual Particle* clone() const;
+	virtual Particle* cloneWithNewRadius(float rad) const;
 
 	inline void addGenerator(shared_ptr<ParticleGenerator> pG) { _gens.push_back(pG); };
 

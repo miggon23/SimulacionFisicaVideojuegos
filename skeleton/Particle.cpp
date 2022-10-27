@@ -47,6 +47,15 @@ Particle* Particle::clone() const
 	return new Particle(pose.p, _vel, acceleration, renderItem->color, dumping, remainingTime, _radius);
 }
 
+//El radio es uno de los elementos que no se pueden cambiar a psteriori en una partícula
+Particle* Particle::cloneWithNewRadius(float rad) const
+{
+	//evitamos valores por debajo de 0
+	if (rad <= 0.001)
+		rad = 0.05;
+	return new Particle(pose.p, _vel, acceleration, renderItem->color, dumping, remainingTime, rad);
+}
+
 void Particle::setUpParticle(float radius)
 {
 	auto s = CreateShape(physx::PxSphereGeometry(radius));
@@ -100,6 +109,19 @@ Particle* Firework::clone() const
 	f->setChangingColor(changingColor, _factorColorChange);
 	//for (auto g : _gens)
 	//	f->addGenerator(g);
+	return f;
+}
+
+Particle* Firework::cloneWithNewRadius(float rad) const
+{
+	//evitamos valores por debajo de 0
+	if (rad <= 0.001)
+		rad = 0.05;
+	Firework* f = new Firework(pose.p, _vel, _gens, rad, age - 1);
+	f->setAcc(acceleration);
+	f->setColor(renderItem->color);
+	f->setRemainingTime(remainingTime);
+	f->setChangingColor(changingColor, _factorColorChange);
 	return f;
 }
 
