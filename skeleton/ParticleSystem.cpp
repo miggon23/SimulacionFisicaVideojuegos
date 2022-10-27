@@ -78,12 +78,16 @@ void ParticleSystem::update(double t)
 
 void ParticleSystem::addParticle(Vector3 pos, Vector3 dir)
 {
-	listP.push_back(new Proyectil(pos, dir, pType, 1));
+	addParticle(new Proyectil(pos, dir, pType, 1));
 }
 
 void ParticleSystem::addParticle(Particle* model)
 {
-	listP.push_back(model);
+	if (listP.size() < LIMIT_NUM_PARTICLE)
+		listP.push_back(model);
+	else
+		delete model;
+	
 }
 
 void ParticleSystem::activateGenerator(std::string s)
