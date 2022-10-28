@@ -2,10 +2,11 @@
 #include "Particle.h"
 #include <list>
 #include "ParticleGenerator.h"
+#include "ParticleForceRegistry.h"
 class ParticleSystem
 {
 private:
-	const unsigned int LIMIT_NUM_PARTICLE = 10000;
+	const unsigned int LIMIT_NUM_PARTICLE = 8000;
 
 	ProyType pType = PAINT_BALL;
 	std::list<Particle*> listP;
@@ -16,6 +17,8 @@ private:
 	//std::list<ParticleGenerator*> _active_particle_generators;
 	shared_ptr<ParticleGenerator> activeGenerator = nullptr;
 	Vector3 _gravity{0.0, -10.0, 0.0};
+
+	std::list<ParticleForceRegistry*> listPFR;
 public:
 	ParticleSystem();
 	~ParticleSystem();

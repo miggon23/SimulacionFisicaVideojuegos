@@ -4,9 +4,10 @@
 
 Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac,Vector4 col, float d = 0.999, float rTime = 5, float tam = 1.0) : 
 																				_vel(vel), pose(pos), acceleration(ac), _radius(tam),
-																				dumping(d), remainingTime(rTime), color(col), changingColor(false)
+																				damping(d), remainingTime(rTime), color(col), changingColor(false)
 {
 	setUpParticle(tam);
+
 }
 
 Particle::Particle(Vector3 pos, Vector3 dir, float radius): pose(pos), _vel(dir), _radius(radius), changingColor(false){
@@ -21,13 +22,23 @@ Particle::~Particle()
 
 void Particle::integrate(double t)
 {
+	remainingTime -= t;	//	SEGUNDOS	
 	if (!isAlive())
 		return;
 
-	_vel = _vel * pow(dumping, t) + acceleration * t;
-	pose.p += _vel * t + 0.5 * acceleration * t;
+	_vel = _vel * pow(damping, t) + acceleration * t;
+	//pose.p += _vel * t + 0.5 * acceleration * t;
+	pose.p += _vel * t;
+	Vector3 totalAcceleration = acceleration;
+	totalAcceleration += force * inverse_mass;
 
-	remainingTime -= t;			//	SEGUNDOS	
+	//Update linear velocity
+	_vel += totalAcceleration * t;
+
+	//Impose drag(damping)
+	_vel *= powf(damping, t);
+
+	clearForce(); //Limpiamos a fuerza una vez integrada
 
 	if (!changingColor)
 		return;
@@ -44,7 +55,7 @@ void Particle::integrate(double t)
 
 Particle* Particle::clone() const
 {
-	return new Particle(pose.p, _vel, acceleration, renderItem->color, dumping, remainingTime, _radius);
+	return new Particle(pose.p, _vel, acceleration, renderItem->color, damping, remainingTime, _radius);
 }
 
 //El radio es uno de los elementos que no se pueden cambiar a psteriori en una partícula
@@ -53,7 +64,17 @@ Particle* Particle::cloneWithNewRadius(float rad) const
 	//evitamos valores por debajo de 0
 	if (rad <= 0.001)
 		rad = 0.05;
-	return new Particle(pose.p, _vel, acceleration, renderItem->color, dumping, remainingTime, rad);
+	return new Particle(pose.p, _vel, acceleration, renderItem->color, damping, remainingTime, rad);
+}
+
+void Particle::clearForce()
+{
+	force = { 0.0, 0.0, 0.0 };
+}
+
+void Particle::addForce(const Vector3& f)
+{
+	force += f;
 }
 
 void Particle::setUpParticle(float radius)
@@ -137,7 +158,7 @@ std::list<Particle*> Firework::explode()
 			Vector3 nMPos = Vector3(pose.p.x, 0.5, pose.p.z);
 			g->setMeanPos(nMPos);
 			//Hacemos que rebote con una velocidad comtraria en el eje y
-			Vector3 nMVel = Vector3(_vel.x, -_vel.y * 0.2, _vel.z);
+			Vector3 nMVel = Vector3(_vel.x, -_vel.y * 0.35, _vel.z);
 			g->setMeanVel(nMVel);
 		}
 		else {

@@ -20,7 +20,7 @@ public:
 
 	inline void setVel(Vector3 v) { _vel = v; };
 	inline Vector3 getVel() { return _vel; };
-	inline void setDumping(float d) { dumping = d; };
+	inline void setDumping(float d) { damping = d; };
 	inline void setAcc(Vector3 ac) { acceleration = ac; };
 	inline void setPos(Vector3 pos) { pose.p = pos; };
 	inline void setColor(Vector4 col) { color = col; renderItem->color = color; };
@@ -36,17 +36,24 @@ public:
 
 	inline float getRemainingTime() { return remainingTime; };
 
+	void clearForce();
+	void addForce(const Vector3& f);
+
+	inline float getMass() { return mass; };
+	inline float getInverseMass() { return inverse_mass; };
+	inline void setMass(float m = 0.01) { mass = m; inverse_mass = 1 / m; };
+
 protected:
-	Vector3 _vel, acceleration;
+	Vector3 _vel, acceleration, force;
 	RenderItem* renderItem = nullptr;
 	Vector4 color = Vector4(0.5f, 0.5f, 0.5f, 1);
 	int colorDir = 1;
 
-	float dumping = 1;
+	float damping = 1;
 	bool changingColor = false;
 	bool alive = true;
 	double remainingTime;	
-	float masa;
+	float mass, inverse_mass;
 	float _radius;
 	//CUanto va a cambiar de color en cada frame
 	float _factorColorChange;

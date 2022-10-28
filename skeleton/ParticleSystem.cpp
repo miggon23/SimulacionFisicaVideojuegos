@@ -2,8 +2,11 @@
 #include "UniformParticleGenerator.h"
 #include "GaussianParticleGenerator.h"
 
+
 ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 {
+	listPFR = new ParticleForceRegistry();
+
 	//Generador uniforme con velocidades dispersas pero con la posicion muy homogenes en el origen
 	//_particle_generators.push_back(new UniformParticleGenerator({ 6.0, 3.0, 6.0 }, { 1.0, 1.0, 1.0 }));
 	shared_ptr<UniformParticleGenerator> g1(new UniformParticleGenerator({ 300.0, 150.0, 300.0 }, { 1.0, 1.0, 1.0 }, { 0.0, 80.0, 0.0 }, { 0.0, 0.0, 0.0 }, 20));
@@ -12,10 +15,6 @@ ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 	g1->setParticle(new Particle({ 0.0, 20000.0, 0.0 }, {0.0, 0.0, 0.0}, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.999, 0, 0.2));
 	//Generador con los mismos parámetros per con distribucion uniforme
 
-	shared_ptr<GaussianParticleGenerator> g2(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 2.0, 3.0 }, 2.0, GetCamera()->getEye(), GetCamera()->getDir() * 20, 2));
-	addParticleGenerator(g2);
-	g2->setMeanTime(4);
-	g2->setParticle(new Particle({ 0.0, 20000.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, 0, 0.5));
 
 	generateFireworkSystem();
 
@@ -25,6 +24,7 @@ ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 	g3->setMeanTime(4);
 	g3->setGeneratorName("FireworkShooterGenerator");
 
+	
 
 }
 
@@ -211,10 +211,10 @@ void ParticleSystem::generateFireworkSystem()
 	//Chispeo, duran muy pocos segundos
 	auto pChispeo = new Particle({ -10000.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { 0.3, 0.2, 0.2, 0.8 }, 0.999, 1, 0.2);
 	pChispeo->setColor({ 0.1, 0.6, 0.8, 1.0 });;
-	shared_ptr<GaussianParticleGenerator> gChispeo(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 1.0, 3.0 }, 0.1, { 0.0, 0.0, 0.0 }, { 0.0 , 0.0, 0.0 }, 5));
+	shared_ptr<GaussianParticleGenerator> gChispeo(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 1.0, 3.0 }, 0.15, { 0.0, 0.0, 0.0 }, { 0.0 , 0.0, 0.0 }, 5));
 	addParticleGenerator(gChispeo);
 	gChispeo->setParticle(pChispeo);
-	gChispeo->setMeanTime(0.2);
+	gChispeo->setMeanTime(0.3);
 	gChispeo->setGeneratorName("ChispeoGenerator");
 
 	auto pGota = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { gChispeo }, 0.4, 2);
@@ -230,4 +230,14 @@ void ParticleSystem::generateFireworkSystem()
 	gRain->setMeanTime(20);
 	gRain->setGeneratorName("RainGenerator");
 	gRain->setLimitOfParticlesPerFrame(20);
+
+
+	auto f = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { gChispeo }, 0.5, 2);
+	f->setColor({ 0.1, 0.6, 0.8, 1.0 });
+	f->setAcc(_gravity);
+	f->setDumping(0.8);
+	shared_ptr<GaussianParticleGenerator> gGaussian(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 2.0, 3.0 }, 2.0, GetCamera()->getEye(), GetCamera()->getDir() * 20, 2));
+	addParticleGenerator(gGaussian);
+	gGaussian->setMeanTime(4);
+	gGaussian->setParticle(f);
 }
