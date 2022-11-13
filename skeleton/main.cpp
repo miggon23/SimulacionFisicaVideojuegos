@@ -12,6 +12,8 @@
 #include "ParticleSystem.h"
 #include <vector>
 #include "GaussianParticleGenerator.h"
+#include "WhirlwindGenerator.h"
+
 
 #include <iostream>
 
@@ -74,8 +76,8 @@ void initPhysics(bool interactive)
 	renderItemPlano = new RenderItem(CreateShape(PxBoxGeometry(300, 1, 300)), new PxTransform(-100, -2, -100), { 1,1,1,1 });
 	renderItemPlano->color = {0.4, 0.2, 0.1, 1.0};
 
-	renderItemBoxFirework = new RenderItem(CreateShape(PxBoxGeometry(2, 4, 2)), new PxTransform(0, 2, 0), { 1,1,1,1 });
-	renderItemBoxFirework->color = {0.7, 0.7, 0.1, 1.0};
+	/*renderItemBoxFirework = new RenderItem(CreateShape(PxBoxGeometry(2, 4, 2)), new PxTransform(0, 2, 0), { 1,1,1,1 });
+	renderItemBoxFirework->color = {0.7, 0.7, 0.1, 1.0};*/
 
 }
 
@@ -115,7 +117,7 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 	DeregisterRenderItem(renderItemPlano);
-	DeregisterRenderItem(renderItemBoxFirework);
+	//DeregisterRenderItem(renderItemBoxFirework);
 	delete pSys;
 }
 
@@ -197,6 +199,20 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		pSys->activateGenerator("RainGenerator");
 		break;
+	}
+	case 'T':
+	{
+		auto dragFG = new WhirlwindGenerator(0.1, 0.2, 2.0, { 0.0, 10.0, 0.0 });
+		for (int j = 0; j < 4; j++){
+			for (int i = 0; i < 7; i++) {
+				float x = -15.0 + 5.0 * i;
+				float y = 0.0 + j * 10.0;
+				auto f = new Particle({ x, y, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.2, 0.2, 0.8, 1.0 }, 0.999, 20, 1.0);
+				f->setMass(30.0);
+				pSys->getParticleForceRegistry()->addRegistry(dragFG, f);
+				pSys->addParticle(f);
+			}
+		}
 	}
 	default:
 		break;

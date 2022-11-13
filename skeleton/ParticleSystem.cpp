@@ -2,10 +2,31 @@
 #include "UniformParticleGenerator.h"
 #include "GaussianParticleGenerator.h"
 
+#include "GravityForceGenerator.h"
+#include "ParticleDragGenerator.h"
+#include "UniformWindGenerator.h"
+#include "WhirlwindGenerator.h"
 
 ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 {
-	listPFR = new ParticleForceRegistry();
+	particleFR = new ParticleForceRegistry();
+	 
+	/*auto f = new Particle({ 0.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.999, 20, 2.0);
+	f->setMass(40);
+	addParticle(f);*/
+
+	/*auto dragFG = new WhirlwindGenerator(0.2, 0.4, 2.0, { 10.0, 10.0, 0.0 });
+	particleFR->addRegistry(dragFG, f);*/
+
+	/*auto gravFG = new GravityForceGenerator({0.0, -9.8, 0.0});
+	particleFR->addRegistry(gravFG, f);*/
+
+	/*auto dragFG = new ParticleDragGenerator(0.2, 0.4);
+	particleFR->addRegistry(dragFG, f);*/
+
+	/*auto dragFG = new UniformWindGenerator(0.2, 0.4, {1.0, 0.0, 0.0});
+	particleFR->addRegistry(dragFG, f);*/
+
 
 	//Generador uniforme con velocidades dispersas pero con la posicion muy homogenes en el origen
 	//_particle_generators.push_back(new UniformParticleGenerator({ 6.0, 3.0, 6.0 }, { 1.0, 1.0, 1.0 }));
@@ -40,10 +61,13 @@ ParticleSystem::~ParticleSystem()
 	while (!_particle_generators.empty()) {
 		p1 = _particle_generators.erase(p1); //Al quedarse sin referencias el shared pointer, este se eliminará
 	}
+	delete particleFR;
 }
 
 void ParticleSystem::update(double t)
 {
+	particleFR->updateForces(t);
+
 	for (auto p : listP) {
 		p->integrate(t);
 		//Intentamos cast dinamico para saber si es un firework
@@ -83,6 +107,7 @@ void ParticleSystem::addParticle(Vector3 pos, Vector3 dir)
 
 void ParticleSystem::addParticle(Particle* model)
 {
+	
 	if (listP.size() < LIMIT_NUM_PARTICLE)
 		listP.push_back(model);
 	else

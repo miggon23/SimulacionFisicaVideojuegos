@@ -18,7 +18,7 @@ private:
 	shared_ptr<ParticleGenerator> activeGenerator = nullptr;
 	Vector3 _gravity{0.0, -10.0, 0.0};
 
-	std::list<ParticleForceRegistry*> listPFR;
+	ParticleForceRegistry* particleFR;
 public:
 	ParticleSystem();
 	~ParticleSystem();
@@ -41,6 +41,8 @@ public:
 	inline bool getGeneratorFollowCamera() { return activeGeneratorFollowCamera; };
 
 	void generateFireworkSystem();
+
+	inline ParticleForceRegistry* getParticleForceRegistry() { return particleFR; };
 protected:
 	bool activeGeneratorFollowCamera;
 };

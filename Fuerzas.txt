@@ -1,3 +1,4 @@
-Clase:
-	-ForceGenerator
-	-ParticleForceRegistry
+Clases:
+	-ForceGenerator --> GravitatoryForceGenerator
+	-ParticleForceRegistry --> updateForces();
+La fuerza de atracciónn gravitatoria depende de la masa;

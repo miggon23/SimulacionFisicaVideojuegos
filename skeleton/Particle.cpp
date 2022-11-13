@@ -4,7 +4,8 @@
 
 Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac,Vector4 col, float d = 0.999, float rTime = 5, float tam = 1.0) : 
 																				_vel(vel), pose(pos), acceleration(ac), _radius(tam),
-																				damping(d), remainingTime(rTime), color(col), changingColor(false)
+																				damping(d), remainingTime(rTime), color(col), changingColor(false),
+																				force({0.0, 0.0, 0.0})
 {
 	setUpParticle(tam);
 
@@ -26,19 +27,21 @@ void Particle::integrate(double t)
 	if (!isAlive())
 		return;
 
-	_vel = _vel * pow(damping, t) + acceleration * t;
-	//pose.p += _vel * t + 0.5 * acceleration * t;
-	pose.p += _vel * t;
-	Vector3 totalAcceleration = acceleration;
-	totalAcceleration += force * inverse_mass;
+	if (inverse_mass > 0.0f) {
+		_vel = _vel * pow(damping, t) + acceleration * t;
+		//pose.p += _vel * t + 0.5 * acceleration * t;
+		pose.p += _vel * t;
+		Vector3 totalAcceleration = acceleration;
+		totalAcceleration += force * inverse_mass;
 
-	//Update linear velocity
-	_vel += totalAcceleration * t;
+		//Update linear velocity
+		_vel += totalAcceleration * t;
 
-	//Impose drag(damping)
-	_vel *= powf(damping, t);
+		//Impose drag(damping)
+		_vel *= powf(damping, t);
 
-	clearForce(); //Limpiamos a fuerza una vez integrada
+		clearForce(); //Limpiamos a fuerza una vez integrada
+	}
 
 	if (!changingColor)
 		return;
