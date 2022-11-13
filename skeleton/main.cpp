@@ -13,6 +13,7 @@
 #include <vector>
 #include "GaussianParticleGenerator.h"
 #include "WhirlwindGenerator.h"
+#include "ExplosionForceGenerator.h"
 
 
 #include <iostream>
@@ -211,6 +212,24 @@ void keyPress(unsigned char key, const PxTransform& camera)
 				f->setMass(30.0);
 				pSys->getParticleForceRegistry()->addRegistry(dragFG, f);
 				pSys->addParticle(f);
+			}
+		}
+	}
+	case 'E':
+	{
+		auto explFG = new ExplosionForceGenerator(80, 1200, 1.0, { 0.0, 0.0, 0.0 });
+		for (int k = 0; k < 7; k++){
+			for (int j = 0; j < 4; j++) {
+				for (int i = 0; i < 7; i++) {
+					float x = -15.0 + 5.0 * i;
+					float y = 0.0 + j * 5.0;
+					float z = -20 + k * 5.0;
+					auto f = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 20, 1.0);
+					f->setChangingColor(true, 0.002);
+					f->setMass(2.0);
+					pSys->getParticleForceRegistry()->addRegistry(explFG, f);
+					pSys->addParticle(f);
+				}
 			}
 		}
 	}
