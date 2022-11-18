@@ -229,7 +229,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 					float x = -15.0 + 5.0 * i;
 					float y = 0.0 + j * 5.0;
 					float z = -20 + k * 5.0;
-					auto f = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 20, 1.0);
+					auto f = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 12, 1.0);
 					f->setChangingColor(true, 0.002);
 					f->setMass(15.0);
 					pSys->getParticleForceRegistry()->addRegistry(explFG.get(), f);
@@ -245,7 +245,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		for (int j = 0; j < 5; j++) {		
 			float x = -30.0 + 15.0 * j;
 	
-			auto f = new Particle({ x, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.4, 0.4, 0.7, 1.0 }, 0.999, 10, 0.8);
+			auto f = new Particle({ x, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.4, 0.4, 0.7, 1.0 }, 0.999, 5, 0.8);
 			f->setMass(10.0);
 			pSys->getParticleForceRegistry()->addRegistry(dragFG.get(), f);
 			pSys->addParticle(f);		
@@ -276,13 +276,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'K':
 	{
 		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setK(explFG->getK() + 200);
+		explFG->setK(explFG->getK() + 500);
 	}
 	break;
 	case 'L':
 	{
 		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setK(explFG->getK() - 200);
+		explFG->setK(explFG->getK() - 500);
 	}
 	break;
 	case '8':
