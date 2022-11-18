@@ -6,9 +6,13 @@
 #include "ParticleDragGenerator.h"
 #include "UniformWindGenerator.h"
 #include "WhirlwindGenerator.h"
+#include "ExplosionForceGenerator.h"
+#include <iostream>
 
 ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
 {
+	generateForcesGenerators();
+
 	particleFR = new ParticleForceRegistry();
 	 
 	/*auto f = new Particle({ 0.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.999, 20, 2.0);
@@ -61,6 +65,9 @@ ParticleSystem::~ParticleSystem()
 	while (!_particle_generators.empty()) {
 		p1 = _particle_generators.erase(p1); //Al quedarse sin referencias el shared pointer, este se eliminará
 	}
+
+	while (!_force_generators.empty())
+		_force_generators.pop_front();
 	delete particleFR;
 }
 
@@ -107,6 +114,8 @@ void ParticleSystem::addParticle(Vector3 pos, Vector3 dir)
 
 void ParticleSystem::addParticle(Particle* model)
 {
+	if (activeForceGenerator != nullptr)
+		particleFR->addRegistry(activeForceGenerator.get(), model);
 	
 	if (listP.size() < LIMIT_NUM_PARTICLE)
 		listP.push_back(model);
@@ -122,6 +131,24 @@ void ParticleSystem::activateGenerator(std::string s)
 	else
 		activeGenerator = nullptr;
 }
+
+void ParticleSystem::activateForceGenerator(std::string s)
+{
+	//Si no hay generador activo o el nombre que llega es de un nuevo generador
+	if (activeForceGenerator == nullptr || activeForceGenerator->getName() != s) {
+		activeForceGenerator = getForceGenerator(s);
+		if (activeForceGenerator == nullptr)
+			std::cout << "No existe el generador " + s;
+		else 
+			std::cout << "Activado el generador " + s;
+	}
+	else {
+		std::cout << "Desactivado el generador de fuerzas " + activeForceGenerator->getName();
+		activeForceGenerator = nullptr;
+	}
+	std::cout << '\n';
+}
+
 
 void ParticleSystem::desactivateGenerator()
 {
@@ -147,6 +174,7 @@ void ParticleSystem::shootFirework(int type)
 
 void ParticleSystem::onParticleDeath(Particle * p)
 {
+	particleFR->deleteParticleRegistry(p);
 	Firework* f;
 	f = dynamic_cast<Firework*>(p);
 	if (f != nullptr) {
@@ -163,10 +191,24 @@ void ParticleSystem::addParticleGenerator(shared_ptr<ParticleGenerator> pG)
 	_particle_generators.push_back(pG);
 }
 
+void ParticleSystem::addForceGenerator(shared_ptr<ForceGenerator> pG)
+{
+	_force_generators.push_back(pG);
+}
+
+
 shared_ptr<ParticleGenerator> ParticleSystem::getParticleGenerator(std::string name)
 {
 	for(auto p : _particle_generators)
 		if(p->getGeneratorName() == name)
+			return p;
+	return nullptr;
+}
+
+shared_ptr<ForceGenerator> ParticleSystem::getForceGenerator(std::string name)
+{
+	for (auto p : _force_generators)
+		if (p->getName() == name)
 			return p;
 	return nullptr;
 }
@@ -256,7 +298,6 @@ void ParticleSystem::generateFireworkSystem()
 	gRain->setGeneratorName("RainGenerator");
 	gRain->setLimitOfParticlesPerFrame(20);
 
-
 	auto f = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { gChispeo }, 0.5, 2);
 	f->setColor({ 0.1, 0.6, 0.8, 1.0 });
 	f->setAcc(_gravity);
@@ -265,4 +306,24 @@ void ParticleSystem::generateFireworkSystem()
 	addParticleGenerator(gGaussian);
 	gGaussian->setMeanTime(4);
 	gGaussian->setParticle(f);
+}
+
+void ParticleSystem::generateForcesGenerators()
+{
+	shared_ptr<ForceGenerator> gF(new GravityForceGenerator({ 0.0, -9.8, 0.0 }));
+	gF->setName("GravityGenerator");
+	addForceGenerator(gF);
+
+
+	shared_ptr<ForceGenerator> gD(new ParticleDragGenerator(0.2, 0.4));
+	gD->setName("DragGenerator");
+	addForceGenerator(gD);
+
+	shared_ptr<ForceGenerator> gW(new WhirlwindGenerator(0.1, 0.2, 4.0, { 0.0, 0.0, 0.0 }));
+	gW->setName("WhirlwindGenerator");
+	addForceGenerator(gW);
+
+	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 8000, 1.0, { 0.0, 0.0, 0.0 }));
+	gE->setName("ExplosionGenerator");
+	addForceGenerator(gE);
 }

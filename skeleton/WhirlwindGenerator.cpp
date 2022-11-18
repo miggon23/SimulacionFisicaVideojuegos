@@ -22,6 +22,6 @@ void WhirlwindGenerator::updateForce(Particle* p, double t)
 	drag_coef = _k1 * drag_coef + _k2 * drag_coef * drag_coef;
 	windF = -v * drag_coef;
 	//Apply the drag force
-	std::cout << windF.x << "\t" << windF.y << "\t" << windF.z << "\n";
+	//std::cout << windF.x << "\t" << windF.y << "\t" << windF.z << "\n";
 	p->addForce(windF);
 }

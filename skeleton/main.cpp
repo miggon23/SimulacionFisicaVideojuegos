@@ -182,18 +182,22 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{		
 		/*auto f = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
 		f->setDevVel(f->getDevVel() + Vector3{0.15, 0.0, 0.15});*/
-		auto f = pSys->getParticleGenerator("RainGenerator");
+		/*auto f = pSys->getParticleGenerator("RainGenerator");
 		f->setMeanVel(f->getMeanVel() - Vector3{ 0.0, 1.5, 0.0 });
-		f->setNParticles(f->getNParticles() + 1);
+		f->setNParticles(f->getNParticles() + 1);*/
+		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setK(explFG->getK() + 0.1);
 		break;
 	}
 	case 'P':
 	{
 		/*auto pGG = static_cast<GaussianParticleGenerator* >(pSys->getParticleGenerator("NORMAL_GENERATOR").get());
 		pGG->setDevVel(pGG->getDevVel() - Vector3{ 0.15, 0.0, 0.15 });*/
-		auto f = pSys->getParticleGenerator("RainGenerator");
+		/*auto f = pSys->getParticleGenerator("RainGenerator");
 		f->setMeanVel(f->getMeanVel() + Vector3{ 0.0, 1.5, 0.0 });
-		f->setNParticles(f->getNParticles() - 1);
+		f->setNParticles(f->getNParticles() - 1);*/
+		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setK(explFG->getK() - 0.1);
 		break;
 	}
 	case 'R':
@@ -203,21 +207,22 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'T':
 	{
-		auto dragFG = new WhirlwindGenerator(0.1, 0.2, 2.0, { 0.0, 10.0, 0.0 });
+		auto dragFG = pSys->getForceGenerator("WhirlwindGenerator");
 		for (int j = 0; j < 4; j++){
 			for (int i = 0; i < 7; i++) {
 				float x = -15.0 + 5.0 * i;
 				float y = 0.0 + j * 10.0;
 				auto f = new Particle({ x, y, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.2, 0.2, 0.8, 1.0 }, 0.999, 20, 1.0);
 				f->setMass(30.0);
-				pSys->getParticleForceRegistry()->addRegistry(dragFG, f);
+				pSys->getParticleForceRegistry()->addRegistry(dragFG.get(), f);
 				pSys->addParticle(f);
 			}
 		}
 	}
+	break;
 	case 'E':
 	{
-		auto explFG = new ExplosionForceGenerator(80, 1200, 1.0, { 0.0, 0.0, 0.0 });
+		auto explFG = pSys->getForceGenerator("ExplosionGenerator");
 		for (int k = 0; k < 7; k++){
 			for (int j = 0; j < 4; j++) {
 				for (int i = 0; i < 7; i++) {
@@ -227,12 +232,19 @@ void keyPress(unsigned char key, const PxTransform& camera)
 					auto f = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 20, 1.0);
 					f->setChangingColor(true, 0.002);
 					f->setMass(2.0);
-					pSys->getParticleForceRegistry()->addRegistry(explFG, f);
+					pSys->getParticleForceRegistry()->addRegistry(explFG.get(), f);
 					pSys->addParticle(f);
 				}
 			}
 		}
 	}
+	break;
+	case 'M':
+		pSys->activateForceGenerator("GravityGenerator");
+	break;
+	case 'N':
+		pSys->activateForceGenerator("ExplosionGenerator");
+		break;
 	default:
 		break;
 	}

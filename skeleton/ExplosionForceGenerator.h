@@ -13,5 +13,10 @@ public:
 
 	virtual void updateForce(Particle* particle, double duration) override;
 
+	inline void setK(float constant) { 
+		if(constant > 0.2)
+			k = constant; 
+	};
+	inline float getK() { return k; };
 };
 
