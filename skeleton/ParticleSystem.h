@@ -20,6 +20,8 @@ private:
 	//std::list<ParticleGenerator*> _active_particle_generators;
 	shared_ptr<ParticleGenerator> activeGenerator = nullptr;
 	shared_ptr<ForceGenerator> activeForceGenerator = nullptr;
+	shared_ptr<ForceGenerator> gravityForceGenerator = nullptr;
+
 
 	Vector3 _gravity{0.0, -10.0, 0.0};
 

@@ -18,5 +18,11 @@ public:
 			k = constant; 
 	};
 	inline float getK() { return k; };
+
+	inline void setR(float constant) {
+		if (constant > 10)
+			R = constant;
+	}
+	inline float getR() { return R; };
 };
 

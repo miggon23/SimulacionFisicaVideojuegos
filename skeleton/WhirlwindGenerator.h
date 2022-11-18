@@ -16,5 +16,8 @@ public:
     };
     inline float getK() { return k; };
 
+
+    inline Vector3 getCenter() { return _center; };
+    inline void setCenter(Vector3 v) {if(v.y > 0.1) _center = v; };
 };
 

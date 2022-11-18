@@ -160,7 +160,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'X':
 		glClearColor(0.4f, 0.5f, 0.6f, 1.0); //BackgroundColor
 		break;
-	case 'U':
+	/*case 'U':
 	{
 		auto pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
 		for (auto p : pG->generateParticles()) {
@@ -168,7 +168,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			pSys->addParticle(p);
 		}
 		break;
-	}
+	}*/
 	case 'G':
 		/*pG = pSys->getParticleGenerator("NORMAL_GENERATOR");
 		for (auto p : pG->generateParticles())
@@ -231,11 +231,24 @@ void keyPress(unsigned char key, const PxTransform& camera)
 					float z = -20 + k * 5.0;
 					auto f = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 20, 1.0);
 					f->setChangingColor(true, 0.002);
-					f->setMass(2.0);
+					f->setMass(15.0);
 					pSys->getParticleForceRegistry()->addRegistry(explFG.get(), f);
 					pSys->addParticle(f);
 				}
 			}
+		}
+	}
+	break;
+	case 'Y':
+	{
+		auto dragFG = pSys->getForceGenerator("WindGenerator");
+		for (int j = 0; j < 5; j++) {		
+			float x = -30.0 + 15.0 * j;
+	
+			auto f = new Particle({ x, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.4, 0.4, 0.7, 1.0 }, 0.999, 10, 0.8);
+			f->setMass(10.0);
+			pSys->getParticleForceRegistry()->addRegistry(dragFG.get(), f);
+			pSys->addParticle(f);		
 		}
 	}
 	break;
@@ -245,6 +258,45 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'N':
 		pSys->activateForceGenerator("ExplosionGenerator");
 		break;
+	case 'V':
+		pSys->activateForceGenerator("WhirlwindGenerator");
+		break;
+	case 'U':
+	{
+		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setCenter(explFG->getCenter() + Vector3(0.0, 0.5, 0.0));
+	}
+	break;
+	case 'J':
+	{
+		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setCenter(explFG->getCenter() - Vector3(0.0, 0.5, 0.0));
+	}
+	break;
+	case 'K':
+	{
+		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setK(explFG->getK() + 200);
+	}
+	break;
+	case 'L':
+	{
+		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setK(explFG->getK() - 200);
+	}
+	break;
+	case '8':
+	{
+		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setR(explFG->getR() + 1);
+	}
+	break;
+	case '9':
+	{
+		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setR(explFG->getR() - 1);
+	}
+	break;
 	default:
 		break;
 	}

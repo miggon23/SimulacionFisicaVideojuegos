@@ -98,8 +98,10 @@ void ParticleSystem::update(double t)
 	//GENERADORES DE PARTÍCULA ACTIVOS
 	if (activeGenerator != nullptr) {
 		auto lP = activeGenerator->generateParticles();
-		for (auto particle : lP)
-			listP.push_back(particle);
+		for (auto particle : lP) {
+			addParticle(particle);
+			particleFR->addRegistry(gravityForceGenerator.get(), particle);
+		}
 		/*if (activeGeneratorFollowCamera) {
 			activeGenerator->setMeanPos(GetCamera()->getEye() + GetCamera()->getDir() * 3);
 			activeGenerator->setMeanVel(GetCamera()->getDir() * 40);
@@ -277,6 +279,7 @@ void ParticleSystem::generateFireworkSystem()
 	//---------------------Rain Generator
 	//Chispeo, duran muy pocos segundos
 	auto pChispeo = new Particle({ -10000.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { 0.3, 0.2, 0.2, 0.8 }, 0.999, 1, 0.2);
+	pChispeo->setMass(1.0);
 	pChispeo->setColor({ 0.1, 0.6, 0.8, 1.0 });;
 	shared_ptr<GaussianParticleGenerator> gChispeo(new GaussianParticleGenerator({ 0.1, 0.1, 0.1 }, { 3.0, 1.0, 3.0 }, 0.15, { 0.0, 0.0, 0.0 }, { 0.0 , 0.0, 0.0 }, 5));
 	addParticleGenerator(gChispeo);
@@ -287,6 +290,7 @@ void ParticleSystem::generateFireworkSystem()
 	auto pGota = new Firework({ -10000.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { gChispeo }, 0.4, 2);
 	pGota->setColor({ 0.1, 0.6, 0.8, 1.0 });
 	pGota->setAcc(_gravity);
+	pGota->setMass(1.0);
 	pGota->setDumping(0.8);
 
 	//shared_ptr<GaussianParticleGenerator> gRain(new GaussianParticleGenerator({ 80.0, 0.1, 80.0 }, { 8.0, 0.8, 8.0 }, 2.0, { 0.1, 400.0, 0.1 }, { 0.0 , -50.0, 0.0 }, 3));
@@ -313,17 +317,21 @@ void ParticleSystem::generateForcesGenerators()
 	shared_ptr<ForceGenerator> gF(new GravityForceGenerator({ 0.0, -9.8, 0.0 }));
 	gF->setName("GravityGenerator");
 	addForceGenerator(gF);
-
+	gravityForceGenerator = gF;
 
 	shared_ptr<ForceGenerator> gD(new ParticleDragGenerator(0.2, 0.4));
 	gD->setName("DragGenerator");
 	addForceGenerator(gD);
 
-	shared_ptr<ForceGenerator> gW(new WhirlwindGenerator(0.1, 0.2, 4.0, { 0.0, 0.0, 0.0 }));
-	gW->setName("WhirlwindGenerator");
+	shared_ptr<ForceGenerator> gW(new UniformWindGenerator({ 0.0, 20.0, 0.0 }, { 20.0, 20.0, 20.0 }, 0.2, 0.4, {0.0, 0.0, 4.0}));
+	gW->setName("WindGenerator");
 	addForceGenerator(gW);
 
-	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 8000, 1.0, { 0.0, 0.0, 0.0 }));
+	shared_ptr<ForceGenerator> gwW(new WhirlwindGenerator(0.1, 0.2, 4.0, { 0.0, 0.0, 0.0 }));
+	gwW->setName("WhirlwindGenerator");
+	addForceGenerator(gwW);
+
+	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 20000, 1.0, { 0.0, 0.0, 0.0 }));
 	gE->setName("ExplosionGenerator");
 	addForceGenerator(gE);
 }

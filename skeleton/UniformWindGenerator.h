@@ -5,9 +5,11 @@ class UniformWindGenerator :
 {
 private:
     Vector3 _wind;
+    Vector3 _center;
+    Vector3 _limits;
 public:
 
-    UniformWindGenerator(float k1, float k2, Vector3 w);
+    UniformWindGenerator(Vector3 center, Vector3 cubeLimits, float k1, float k2, Vector3 w);
 
     virtual void updateForce(Particle* particle, double t) override;
 };
