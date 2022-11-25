@@ -7,6 +7,7 @@
 #include "UniformWindGenerator.h"
 #include "WhirlwindGenerator.h"
 #include "ExplosionForceGenerator.h"
+#include "SpringForceGenerator.h"
 #include <iostream>
 
 ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
@@ -334,4 +335,8 @@ void ParticleSystem::generateForcesGenerators()
 	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 20000, 1.0, { 0.0, 0.0, 0.0 }));
 	gE->setName("ExplosionGenerator");
 	addForceGenerator(gE);
+
+	shared_ptr<ForceGenerator> gAnch(new AnchoredSpringFG(20.0, 10.0, {0.0, 50.0, 0.0}));
+	gAnch->setName("AnchoredSpringFG");
+	addForceGenerator(gAnch);
 }

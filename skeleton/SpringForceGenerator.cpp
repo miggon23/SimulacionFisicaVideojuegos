@@ -5,7 +5,7 @@ SpringForceGenerator::SpringForceGenerator(double k, double resting_length, Part
 {
 }
 
-inline void SpringForceGenerator::updateForce(Particle* particle)
+inline void SpringForceGenerator::updateForce(Particle* particle, double duration)
 {
 	Vector3 force = _other->getPos() - particle->getPos();
 
@@ -17,4 +17,16 @@ inline void SpringForceGenerator::updateForce(Particle* particle)
 	particle->addForce(force);
 }
 
+//-------------------------------------------------------------------------------------
 
+AnchoredSpringFG::AnchoredSpringFG(double k, double resting, Vector3 anchor_pos) :
+							SpringForceGenerator(k, resting, nullptr)
+{
+	_other = new Particle(anchor_pos, { 0,0,0 }, { 0, 0, 0 }, { 0.0, 0.6, 0.0, 1.0 }, 0.9, 1000.0, 0.8);
+	_other->setMass(1e6);
+}	
+
+AnchoredSpringFG::~AnchoredSpringFG()
+{
+	delete _other;
+}

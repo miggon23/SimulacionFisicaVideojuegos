@@ -14,7 +14,7 @@
 #include "GaussianParticleGenerator.h"
 #include "WhirlwindGenerator.h"
 #include "ExplosionForceGenerator.h"
-
+#include "SpringForceGenerator.h"
 
 #include <iostream>
 
@@ -293,8 +293,27 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case '9':
 	{
-		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setR(explFG->getR() - 1);
+		/*auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setR(explFG->getR() - 1);*/
+		auto anchFG = dynamic_cast<AnchoredSpringFG*>(pSys->getForceGenerator("AnchoredSpringFG").get());
+
+		auto f = new Particle({ 0, 49, 0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 120, 0.5);
+		f->setMass(1.0);
+		pSys->getParticleForceRegistry()->addRegistry(anchFG, f);
+		pSys->addParticle(f);
+	}
+	break;
+	case '+':
+	{
+		auto anchFG = dynamic_cast<AnchoredSpringFG*>(pSys->getForceGenerator("AnchoredSpringFG").get());
+		anchFG->setK(anchFG->getK() + 2.0);
+		cout << "Nueva k para el muelle: " << anchFG->getK() << "\n";
+	}
+	break;
+	case '-':
+	{
+		auto anchFG = dynamic_cast<AnchoredSpringFG*>(pSys->getForceGenerator("AnchoredSpringFG").get());
+		anchFG->setK(anchFG->getK() - 2.0);
 	}
 	break;
 	default:
