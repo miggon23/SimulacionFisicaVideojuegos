@@ -8,6 +8,7 @@
 #include "WhirlwindGenerator.h"
 #include "ExplosionForceGenerator.h"
 #include "SpringForceGenerator.h"
+#include "SinkForceGenerator.h"
 #include <iostream>
 
 ParticleSystem::ParticleSystem() : listP(0), activeGeneratorFollowCamera(false)
@@ -80,8 +81,11 @@ void ParticleSystem::update(double t)
 		p->integrate(t);
 		//Intentamos cast dinamico para saber si es un firework
 
-		if (p->getRemainingTime() <= 0 || p->getPos().y <= 0) {
+		/*if (p->getRemainingTime() <= 0 || p->getPos().y <= 0) {
 			p->setAlive(false);		
+		}*/
+		if (p->getRemainingTime() <= 0) {
+			p->setAlive(false);
 		}
 	}
 
@@ -339,4 +343,130 @@ void ParticleSystem::generateForcesGenerators()
 	shared_ptr<ForceGenerator> gAnch(new AnchoredSpringFG(20.0, 10.0, {0.0, 50.0, 0.0}));
 	gAnch->setName("AnchoredSpringFG");
 	addForceGenerator(gAnch);
+
+	shared_ptr<ForceGenerator> gSink(new SinkForceGenerator(1, 1000.0, { 0.0, 10.0, 0.0 }));
+	gSink->setName("SinkFG");
+	addForceGenerator(gSink);
+
+}
+
+void ParticleSystem::testSprings()
+{
+	Particle* p1 = new Particle({ 10.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.9, 40, 2.0);
+	p1->setMass(2.0);
+	p1->setSemiImplicit(true);
+
+	Particle* p2 = new Particle({ -10.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.5, 0.05, 0.0, 1.0 }, 0.9, 40, 2.0);
+	p2->setMass(2.0);
+
+	p2->setColor({ 0.0, 1.0, 1.0, 1.0 }); // cyan
+	p2->setSemiImplicit(true);
+
+	addParticle(p1);
+	addParticle(p2);
+
+	shared_ptr<ForceGenerator> sfg1(new SpringForceGenerator(40, 10, p2));
+	shared_ptr<ForceGenerator> sfg2(new SpringForceGenerator(40, 10, p1));
+
+	sfg1->setName("SpringUno");
+	sfg2->setName("SpringDos");
+
+	particleFR->addRegistry(sfg1.get(), p1);
+	particleFR->addRegistry(sfg2.get(), p2);
+
+	//GravityForceGenerator* gfg = new GravityForceGenerator({ 0.0, -9.8, 0.0 });
+	//pfr->addRegistry(gfg, p1);
+	//pfr->addRegistry(gfg, p2);
+
+	addForceGenerator(sfg1);
+	addForceGenerator(sfg2);
+	//_forceGenerators.push_back(gfg);
+}
+
+void ParticleSystem::testRubber()
+{
+	Particle* p1 = new Particle({ 15.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.4, 0.0, 1.0 }, 0.9, 40, 2.0);
+	p1->setMass(2.0);
+	p1->setSemiImplicit(true);
+
+	Particle* p2 = new Particle({ -15.0, 30.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.4, 0.0, 1.0 }, 0.9, 40, 2.0);
+	p2->setMass(2.0);
+
+	p2->setColor({ 0.0, 1.0, 1.0, 1.0 }); // cyan
+	p2->setSemiImplicit(true);
+
+	addParticle(p1);
+	addParticle(p2);
+
+	shared_ptr<ForceGenerator> sfg1(new RubberForceGenerator(40, 16, p2));
+	shared_ptr<ForceGenerator> sfg2(new RubberForceGenerator(40, 16, p1));
+
+	sfg1->setName("RubberUno");
+	sfg2->setName("RubberDos");
+
+	particleFR->addRegistry(sfg1.get(), p1);
+	particleFR->addRegistry(sfg2.get(), p2);
+
+	//GravityForceGenerator* gfg = new GravityForceGenerator({ 0.0, -9.8, 0.0 });
+	//pfr->addRegistry(gfg, p1);
+	//pfr->addRegistry(gfg, p2);
+
+	addForceGenerator(sfg1);
+	addForceGenerator(sfg2);
+	//_forceGenerators.push_back(gfg);
+}
+
+void ParticleSystem::testSlinky()
+{
+	Particle* p0 = new Particle({ 15.0, 41.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+	p0->setMass(2.0);
+	p0->setColor({ 0.0, 0.5, 1.0, 1.0 }); // blue
+	Particle* p1 = new Particle({ 15.0, 40.8, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+	p1->setMass(2.0);
+	p1->setColor({ 0.0, 1.0, 0.0, 1.0 }); // green
+	Particle* p2 = new Particle({ 15.0, 40.6, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+	p2->setMass(2.0);
+	p2->setColor({ 1.0, 1.0, 0.0, 1.0 }); // yellow
+	Particle* p3 = new Particle({ 15.0, 40.4, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+	p3->setMass(2.0);
+	p3->setColor({ 1.0, 0.5, 0.0, 1.0 }); // orange
+	Particle* p4 = new Particle({ 15.0, 40.2, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+	p4->setMass(2.0);
+	p4->setColor({ 1.0, 0.0, 0.0, 1.0 }); // red
+
+	addParticle(p0);
+	addParticle(p1);
+	addParticle(p2);
+	addParticle(p3);
+	addParticle(p4);
+
+	// Partícula estática
+	Particle* pEst = new Particle({ 15.0, 41.2, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.1, 0.8, 0.1, 1.0 }, 0.85, 40, 1.0);
+
+	SpringForceGenerator* base = new SpringForceGenerator(200, 5, pEst);
+	particleFR->addRegistry(base, p0);
+
+	auto sfg0 = new SpringForceGenerator(180, 5, p0);
+	particleFR->addRegistry(sfg0, p1);
+
+	auto sfg4 = new SpringForceGenerator(160, 5, p1);
+	particleFR->addRegistry(sfg4, p0);
+
+	auto sfg1 = new SpringForceGenerator(150, 5, p2);
+	particleFR->addRegistry(sfg1, p2);
+
+	auto sfg5 = new SpringForceGenerator(140, 5, p2);
+	particleFR->addRegistry(sfg5, p1);
+
+	auto sfg2 = new SpringForceGenerator(130, 5, p2);
+	particleFR->addRegistry(sfg2, p3);
+
+	auto sfg6 = new SpringForceGenerator(120, 5, p3);
+	particleFR->addRegistry(sfg6, p2);
+
+	auto sfg3 = new SpringForceGenerator(110, 5, p3);
+	particleFR->addRegistry(sfg3, p4);
+
+	auto sfg7 = new SpringForceGenerator(25, 6, p4);
+	particleFR->addRegistry(sfg7, p3);
 }

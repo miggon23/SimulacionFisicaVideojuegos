@@ -5,7 +5,7 @@
 Particle::Particle(Vector3 pos, Vector3 vel, Vector3 ac,Vector4 col, float d = 0.999, float rTime = 5, float tam = 1.0) : 
 																				_vel(vel), pose(pos), acceleration(ac), _radius(tam),
 																				damping(d), remainingTime(rTime), color(col), changingColor(false),
-																				force({0.0, 0.0, 0.0})
+																				force({0.0, 0.0, 0.0}), semiImplicit(false)
 {
 	setUpParticle(tam);
 
@@ -30,7 +30,8 @@ void Particle::integrate(double t)
 	if (inverse_mass > 0.0f) {
 		_vel = _vel * pow(damping, t) + acceleration * t;
 		//pose.p += _vel * t + 0.5 * acceleration * t;
-		pose.p += _vel * t;
+		if(!semiImplicit)
+			pose.p += _vel * t;
 		Vector3 totalAcceleration = acceleration;
 		totalAcceleration += force * inverse_mass;
 
@@ -39,6 +40,9 @@ void Particle::integrate(double t)
 
 		//Impose drag(damping)
 		_vel *= powf(damping, t);
+
+		if(semiImplicit)
+			pose.p += _vel * t;
 
 		clearForce(); //Limpiamos a fuerza una vez integrada
 	}
@@ -85,6 +89,7 @@ void Particle::setUpParticle(float radius)
 	auto s = CreateShape(physx::PxSphereGeometry(radius));
 	renderItem = new RenderItem(s, &pose, color);
 	_factorColorChange = 0.0005;
+	volume = (3.0 / 4.0) * 3.1416 * radius * radius * radius;
 }
 
 //------------------------------------------

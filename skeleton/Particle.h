@@ -28,6 +28,7 @@ public:
 	inline void setRemainingTime(float t) { remainingTime = t; };
 	inline void setChangingColor(bool b, float timeChange) { changingColor = b; _factorColorChange = timeChange; };
 	inline Vector3 getPos() { return pose.p; };
+	inline float getVolume() { return volume; };
 
 	inline bool isAlive() { return alive; };
 
@@ -42,6 +43,7 @@ public:
 	inline float getMass() { return mass; };
 	inline float getInverseMass() { return inverse_mass; };
 	inline void setMass(float m = 0.01) { mass = m; inverse_mass = 1 / m; };
+	inline void setSemiImplicit(bool b) { semiImplicit = b; };
 
 protected:
 	Vector3 _vel, acceleration, force;
@@ -54,10 +56,12 @@ protected:
 	bool alive = true;
 	double remainingTime;	
 	float mass, inverse_mass;
-	float _radius;
+	float _radius, volume;
 	//CUanto va a cambiar de color en cada frame
 	float _factorColorChange;
 	physx::PxTransform pose; //A render item le pasaremos la dirección de esta pose, para que se actualice automáticamente
+
+	bool semiImplicit;
 private:
 	void setUpParticle(float radius);
 };

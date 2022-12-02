@@ -30,3 +30,22 @@ AnchoredSpringFG::~AnchoredSpringFG()
 {
 	delete _other;
 }
+
+RubberForceGenerator::RubberForceGenerator(double k, double resting_length, Particle* other) : SpringForceGenerator(k, resting_length, other)
+{
+}
+
+void RubberForceGenerator::updateForce(Particle* particle, double duration)
+{
+	Vector3 force = _other->getPos() - particle->getPos();
+
+	if (force.magnitude() < _resting_length)
+		return;
+
+	const float length = force.normalize();
+	const float delta_x = length - _resting_length;
+
+	force *= delta_x * _k;
+
+	particle->addForce(force);
+}

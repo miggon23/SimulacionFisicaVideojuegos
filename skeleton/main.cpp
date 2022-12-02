@@ -15,6 +15,8 @@
 #include "WhirlwindGenerator.h"
 #include "ExplosionForceGenerator.h"
 #include "SpringForceGenerator.h"
+#include "SinkForceGenerator.h"
+
 
 #include <iostream>
 
@@ -43,6 +45,7 @@ RenderItem* renderItemPlano;
 RenderItem* renderItemBoxFirework;
 
 float radiud;
+float mass;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -75,11 +78,13 @@ void initPhysics(bool interactive)
 	auto s = CreateShape(physx::PxPlaneGeometry());
 	PxTransform pose;
 	renderItemPlano = new RenderItem(CreateShape(PxBoxGeometry(300, 1, 300)), new PxTransform(-100, -2, -100), { 1,1,1,1 });
+	auto renderItemPlano2 = new RenderItem(CreateShape(PxBoxGeometry(30, 0.2, 30)), new PxTransform( 10, 10, 10), { 1,1,1,1 });
 	renderItemPlano->color = {0.4, 0.2, 0.1, 1.0};
+	renderItemPlano2->color = { 0.15, 0.15, 0.7, 1.0 };
 
 	/*renderItemBoxFirework = new RenderItem(CreateShape(PxBoxGeometry(2, 4, 2)), new PxTransform(0, 2, 0), { 1,1,1,1 });
 	renderItemBoxFirework->color = {0.7, 0.7, 0.1, 1.0};*/
-
+	mass = 10.0;
 }
 
 
@@ -185,8 +190,14 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		/*auto f = pSys->getParticleGenerator("RainGenerator");
 		f->setMeanVel(f->getMeanVel() - Vector3{ 0.0, 1.5, 0.0 });
 		f->setNParticles(f->getNParticles() + 1);*/
-		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
-		explFG->setK(explFG->getK() + 0.1);
+		//------------------------------------------------------
+		/*auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setK(explFG->getK() + 0.1);*/
+
+		auto anchFG = dynamic_cast<SpringForceGenerator*>(pSys->getForceGenerator("SpringUno").get());
+		anchFG->setK(anchFG->getK() + 2.0);
+		cout << "Nueva k para el muelle: " << anchFG->getK() << "\n";
+
 		break;
 	}
 	case 'P':
@@ -196,8 +207,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		/*auto f = pSys->getParticleGenerator("RainGenerator");
 		f->setMeanVel(f->getMeanVel() + Vector3{ 0.0, 1.5, 0.0 });
 		f->setNParticles(f->getNParticles() - 1);*/
-		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
-		explFG->setK(explFG->getK() - 0.1);
+		//-----------------------------------------------
+		/*auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setK(explFG->getK() - 0.1);*/
+
+		auto anchFG = dynamic_cast<SpringForceGenerator*>(pSys->getForceGenerator("SpringUno").get());
+		anchFG->setK(anchFG->getK() - 2.0);
+		cout << "Nueva k para el muelle: " << anchFG->getK() << "\n";
 		break;
 	}
 	case 'R':
@@ -263,32 +279,67 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'U':
 	{
-		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
-		explFG->setCenter(explFG->getCenter() + Vector3(0.0, 0.5, 0.0));
+		/*auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setCenter(explFG->getCenter() + Vector3(0.0, 0.5, 0.0));*/
+		mass += 2;
+		cout << "Masa para las particulas flotantes: " << mass << '\n';
 	}
 	break;
 	case 'J':
 	{
-		auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
-		explFG->setCenter(explFG->getCenter() - Vector3(0.0, 0.5, 0.0));
+		/*auto explFG = dynamic_cast<WhirlwindGenerator*>(pSys->getForceGenerator("WhirlwindGenerator").get());
+		explFG->setCenter(explFG->getCenter() - Vector3(0.0, 0.5, 0.0));*/
+		if (mass > 2)
+			mass -= 2;
+		cout << "Masa para las particulas flotantes: " << mass << '\n';
 	}
 	break;
 	case 'K':
 	{
-		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setK(explFG->getK() + 500);
+		/*auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setK(explFG->getK() + 500);*/
+		auto anchFG = dynamic_cast<SinkForceGenerator*>(pSys->getForceGenerator("SinkFG").get());
+		anchFG->setLiquidDensity(anchFG->getLiquidDensity() + 10.0);
+		cout << "Nueva densidad para el liquido: " << anchFG->getLiquidDensity() << "\n";
 	}
 	break;
 	case 'L':
 	{
-		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setK(explFG->getK() - 500);
+		/*auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
+		explFG->setK(explFG->getK() - 500);*/
+		auto anchFG = dynamic_cast<SinkForceGenerator*>(pSys->getForceGenerator("SinkFG").get());
+		anchFG->setLiquidDensity(anchFG->getLiquidDensity() - 10.0);
+		cout << "Nueva densidad para el liquido: " << anchFG->getLiquidDensity() << "\n";
+	}
+	break;
+	case '5':
+	{
+		auto sinkFG = dynamic_cast<SinkForceGenerator*>(pSys->getForceGenerator("SinkFG").get());
+		auto gFG = pSys->getForceGenerator("GravityGenerator").get();
+		float x = rand() % 30;
+		float y = 10 + rand() % 10;
+		float z = rand() % 30;
+		auto p = new Particle({ x, y, z }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.4, 1.0 }, 0.9, 30, 1);
+		p->setMass(mass);
+		pSys->getParticleForceRegistry()->addRegistry(sinkFG, p);
+		pSys->getParticleForceRegistry()->addRegistry(gFG, p);
+
+		pSys->addParticle(p);
+	}
+	break;
+	case '6':
+	{
+		pSys->testSlinky();
+	}
+	break;
+	case '7':
+	{
+		pSys->testRubber();
 	}
 	break;
 	case '8':
 	{
-		auto explFG = dynamic_cast<ExplosionForceGenerator*>(pSys->getForceGenerator("ExplosionGenerator").get());
-		explFG->setR(explFG->getR() + 1);
+		pSys->testSprings();
 	}
 	break;
 	case '9':
@@ -300,6 +351,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		auto f = new Particle({ 0, 49, 0 }, { 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0.8, 0.2, 0.2, 1.0 }, 0.999, 120, 0.5);
 		f->setMass(1.0);
 		pSys->getParticleForceRegistry()->addRegistry(anchFG, f);
+		f->setSemiImplicit(true);
 		pSys->addParticle(f);
 	}
 	break;

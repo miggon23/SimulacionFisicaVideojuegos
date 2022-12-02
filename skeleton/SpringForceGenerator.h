@@ -7,7 +7,7 @@ public:
 
 	virtual void updateForce(Particle* particle, double duration) override;
 
-	inline void setK(double k) { _k = k; };
+	inline void setK(double k) { if(k > 0.1) _k = k; };
 	inline float getK() { return _k; };
 
 	virtual ~SpringForceGenerator() {};
@@ -22,5 +22,12 @@ public:
 	AnchoredSpringFG(double k, double resting, Vector3 anchor_pos);
 
 	~AnchoredSpringFG();
+};
+
+class RubberForceGenerator : public SpringForceGenerator
+{
+public:
+	RubberForceGenerator(double k, double resting_length, Particle* other);
+	virtual void updateForce(Particle* particle, double duration) override;
 };
 
