@@ -11,6 +11,6 @@ public:
 
     UniformWindGenerator(Vector3 center, Vector3 cubeLimits, float k1, float k2, Vector3 w);
 
-    virtual void updateForce(Particle* particle, double t) override;
+    virtual void updateForce(physx::PxRigidDynamic* particle, double t) override;
 };
 

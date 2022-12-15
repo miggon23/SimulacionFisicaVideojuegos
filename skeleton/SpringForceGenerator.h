@@ -3,9 +3,9 @@
 class SpringForceGenerator : public ForceGenerator
 {
 public:
-	SpringForceGenerator(double k, double resting_length, Particle* other);
+	SpringForceGenerator(double k, double resting_length, physx::PxRigidDynamic* other);
 
-	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(physx::PxRigidDynamic* particle, double duration) override;
 
 	inline void setK(double k) { if(k > 0.1) _k = k; };
 	inline float getK() { return _k; };
@@ -14,7 +14,7 @@ public:
 protected:
 	double _k;
 	double _resting_length;
-	Particle* _other;
+	physx::PxRigidDynamic* _other;
 };
 
 class AnchoredSpringFG : public SpringForceGenerator {
@@ -27,7 +27,7 @@ public:
 class RubberForceGenerator : public SpringForceGenerator
 {
 public:
-	RubberForceGenerator(double k, double resting_length, Particle* other);
-	virtual void updateForce(Particle* particle, double duration) override;
+	RubberForceGenerator(double k, double resting_length, physx::PxRigidDynamic* other);
+	virtual void updateForce(physx::PxRigidDynamic* particle, double duration) override;
 };
 

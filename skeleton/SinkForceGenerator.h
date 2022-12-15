@@ -10,7 +10,7 @@ protected:
 public:
     SinkForceGenerator(float h, float lD, Vector3 p);
 
-    virtual void updateForce(Particle* particle, double duration) override;
+    virtual void updateForce(physx::PxRigidDynamic* particle, double duration) override;
     inline float getLiquidDensity() { return _liquid_density; };
 
     inline void setLiquidDensity(float ld) { _liquid_density = ld; };

@@ -11,7 +11,7 @@ private:
 public:
 	ExplosionForceGenerator(const float explosionRadius, const float explosionForce, const float timeConstant, Vector3 center);
 
-	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(physx::PxRigidDynamic* p, double duration) override;
 
 	inline void setK(float constant) { 
 		if(constant > 0.2)

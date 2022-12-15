@@ -24,6 +24,10 @@
     <ClCompile Include="ExplosionForceGenerator.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="SinkForceGenerator.cpp" />
+    <ClCompile Include="WorldManager.cpp" />
+    <ClCompile Include="RigidBodyGenerator.cpp" />
+    <ClCompile Include="UniformRBGenerator.cpp" />
+    <ClCompile Include="GaussianRBGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -49,6 +53,10 @@
     <ClInclude Include="ExplosionForceGenerator.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="SinkForceGenerator.h" />
+    <ClInclude Include="WorldManager.h" />
+    <ClInclude Include="RigidBodyGenerator.h" />
+    <ClInclude Include="UniformRBGenerator.h" />
+    <ClInclude Include="GaussianRBGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

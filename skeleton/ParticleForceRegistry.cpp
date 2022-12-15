@@ -4,12 +4,12 @@ ParticleForceRegistry::ParticleForceRegistry()
 {
 }
 
-void ParticleForceRegistry::addRegistry(ForceGenerator* fG, Particle* p)
+void ParticleForceRegistry::addRegistry(ForceGenerator* fG, physx::PxRigidDynamic* p)
 {
 	this->insert(FRPair{fG, p});
 }
 
-void ParticleForceRegistry::deleteParticleRegistry(Particle* p)
+void ParticleForceRegistry::deleteParticleRegistry(physx::PxRigidDynamic* p)
 {
 	for (auto it = begin(); it != end();) {
 		if (it->second == p) {

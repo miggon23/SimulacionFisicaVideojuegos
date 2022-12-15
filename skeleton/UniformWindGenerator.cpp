@@ -7,11 +7,11 @@ UniformWindGenerator::UniformWindGenerator(Vector3 center, Vector3 cubeLimits, f
 {
 }
 
-void UniformWindGenerator::updateForce(Particle* particle, double t)
+void UniformWindGenerator::updateForce(physx::PxRigidDynamic* particle, double t)
 {
-	if (fabs(particle->getInverseMass() < 1e-10))
+	if (fabs(particle->getInvMass() < 1e-10))
 		return;
-	auto pos = particle->getPos();
+	auto pos = particle->getGlobalPose().p;
 	auto positiveLimits = _center + _limits;
 	auto negativeLimits = -positiveLimits;
 	if (pos.x > positiveLimits.x || pos.x < negativeLimits.x || pos.y > positiveLimits.y
@@ -21,7 +21,7 @@ void UniformWindGenerator::updateForce(Particle* particle, double t)
 	//APLICAR EN AREA DE EFECTO
 
 	//Compute the drag force
-	Vector3 v = particle->getVel() - _wind;
+	Vector3 v = particle->getLinearVelocity() - _wind;
 	float drag_coef = v.normalize();
 	Vector3 windF;
 	drag_coef = _k1 * drag_coef + _k2 * drag_coef * drag_coef;

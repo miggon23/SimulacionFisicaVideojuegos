@@ -1,13 +1,13 @@
 #include "SpringForceGenerator.h"
 
-SpringForceGenerator::SpringForceGenerator(double k, double resting_length, Particle* other) : 
+SpringForceGenerator::SpringForceGenerator(double k, double resting_length, physx::PxRigidDynamic* other) :
 													_k(k), _resting_length(resting_length)	, _other(other)
 {
 }
 
-inline void SpringForceGenerator::updateForce(Particle* particle, double duration)
+inline void SpringForceGenerator::updateForce(physx::PxRigidDynamic* particle, double duration)
 {
-	Vector3 force = _other->getPos() - particle->getPos();
+	Vector3 force = _other->getGlobalPose().p - particle->getGlobalPose().p;
 
 	const float length = force.normalize();
 	const float delta_x = length - _resting_length;
@@ -22,22 +22,22 @@ inline void SpringForceGenerator::updateForce(Particle* particle, double duratio
 AnchoredSpringFG::AnchoredSpringFG(double k, double resting, Vector3 anchor_pos) :
 							SpringForceGenerator(k, resting, nullptr)
 {
-	_other = new Particle(anchor_pos, { 0,0,0 }, { 0, 0, 0 }, { 0.0, 0.6, 0.0, 1.0 }, 0.9, 1000.0, 0.8);
+	//WARNING Descomentar:
+	//_other = new physx::PxRigidDynamic(anchor_pos, { 0,0,0 }, { 0, 0, 0 }, { 0.0, 0.6, 0.0, 1.0 }, 0.9, 1000.0, 0.8);
 	_other->setMass(1e6);
 }	
 
 AnchoredSpringFG::~AnchoredSpringFG()
 {
-	delete _other;
 }
 
-RubberForceGenerator::RubberForceGenerator(double k, double resting_length, Particle* other) : SpringForceGenerator(k, resting_length, other)
+RubberForceGenerator::RubberForceGenerator(double k, double resting_length, physx::PxRigidDynamic* other) : SpringForceGenerator(k, resting_length, other)
 {
 }
 
-void RubberForceGenerator::updateForce(Particle* particle, double duration)
+void RubberForceGenerator::updateForce(physx::PxRigidDynamic* particle, double duration)
 {
-	Vector3 force = _other->getPos() - particle->getPos();
+	Vector3 force = _other->getGlobalPose().p - particle->getGlobalPose().p;
 
 	if (force.magnitude() < _resting_length)
 		return;

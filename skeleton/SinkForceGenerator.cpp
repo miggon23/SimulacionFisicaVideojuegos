@@ -5,9 +5,9 @@ SinkForceGenerator::SinkForceGenerator(float h, float lD, Vector3 p) : _height(h
 
 }
 
-void SinkForceGenerator::updateForce(Particle* particle, double duration)
+void SinkForceGenerator::updateForce(physx::PxRigidDynamic* particle, double duration)
 {
-	float h = particle->getPos().y;
+	float h = particle->getGlobalPose().p.y;
 	float h0 = pos.y;
 
 	Vector3 F(0, 0, 0);
@@ -24,7 +24,8 @@ void SinkForceGenerator::updateForce(Particle* particle, double duration)
 		immersed = (h0 - h) / _height + 0.5;
 	}
 
-	F.y = _liquid_density * particle->getVolume() * immersed * 9.8;
+	//WARNING descomentar:
+	//F.y = _liquid_density * particle->getVolume() * immersed * 9.8;
 
 	particle->addForce(F);
 }

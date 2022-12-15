@@ -5,9 +5,10 @@ ExplosionForceGenerator::ExplosionForceGenerator(const float explosionRadius, co
 {
 }
 
-void ExplosionForceGenerator::updateForce(Particle* p, double duration)
+void ExplosionForceGenerator::updateForce(physx::PxRigidDynamic* p, double duration)
 {
-	auto pos = p->getPos();
+	//auto pos = p->getPos();
+	auto pos = p->getGlobalPose().p;
 	//float distance = sqrtf(pow(pos.x - _center.x, 2) + pow(pos.y - _center.y, 2) + pow(pos.z - _center.z, 2));
 	//Calculamos la distancia al cuadrado
 	float distance = pow(pos.x - _center.x, 2) + pow(pos.y - _center.y, 2) + pow(pos.z - _center.z, 2);
