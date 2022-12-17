@@ -124,7 +124,7 @@ void cleanupPhysics(bool interactive)
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	
+	delete wM;
 	gFoundation->release();
 	//DeregisterRenderItem(renderItemPlano);
 	//DeregisterRenderItem(renderItemBoxFirework);
@@ -151,6 +151,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case 'M':
 		wM->activateForceGenerator("ExplosionGenerator");
+	break;
+	case 'T':
+		wM->activateForceGenerator("TorqueGenerator");
+	break;
+	case 'G':
+	{
+		auto pG = wM->getParticleGenerator("Gaussian");
+		pG->setActive(!pG->getActive());
+	}
 	break;
 	default:
 		break;

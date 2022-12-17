@@ -28,6 +28,7 @@
     <ClCompile Include="RigidBodyGenerator.cpp" />
     <ClCompile Include="UniformRBGenerator.cpp" />
     <ClCompile Include="GaussianRBGenerator.cpp" />
+    <ClCompile Include="TorqueForceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="RigidBodyGenerator.h" />
     <ClInclude Include="UniformRBGenerator.h" />
     <ClInclude Include="GaussianRBGenerator.h" />
+    <ClInclude Include="TorqueForceGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

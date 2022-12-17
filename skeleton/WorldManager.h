@@ -17,8 +17,7 @@ struct RigidDynamic {
 	unsigned int deathTime;
 	unsigned int maxTime;
 	bool alive;
-
-	~RigidDynamic() { DeregisterRenderItem(rItem); };
+	vector<string> forcesName;
 };
 
 class WorldManager
@@ -29,13 +28,14 @@ protected:
 	std::list<RigidDynamic*> itemList;
 	std::list<shared_ptr<RigidBodyGenerator>> _particle_generators;
 	std::list<shared_ptr<ForceGenerator>> _force_generators;
-	std::shared_ptr<ForceGenerator> _activeForceGenerator = nullptr;
 
 	ParticleForceRegistry* particleFR;
 
 	PxPhysics* _gPhysics;
 	PxScene* _gScene;
 
+	unsigned int _next_gen;
+	unsigned int _gen_delay;
 public:
 	WorldManager(PxPhysics* gPhysics, PxScene* gScene);
 	

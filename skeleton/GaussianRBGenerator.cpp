@@ -2,8 +2,8 @@
 #include "WorldManager.h"
 #include <random>
 
-GaussianRBGenerator::GaussianRBGenerator(WorldManager* wM, Vector3 dvPos, Vector3 dvVel, double dvT, Vector3 posM, Vector3 velM, int nPart)
-                  : RigidBodyGenerator(wM, "NORMAL_GENERATOR", posM, velM, nPart), std_dev_pos(dvPos), std_dev_vel(dvVel), std_dev_t(dvT)
+GaussianRBGenerator::GaussianRBGenerator(WorldManager* wM, Vector3 dvPos, Vector3 dvVel, double dvT, Vector3 posM, Vector3 velM, int nPart, bool active)
+                  : RigidBodyGenerator(wM, "NORMAL_GENERATOR", posM, velM, nPart, active), std_dev_pos(dvPos), std_dev_vel(dvVel), std_dev_t(dvT)
 {
 }
 
@@ -34,10 +34,13 @@ std::list<RigidDynamic*> GaussianRBGenerator::generateParticles()
         vel.x = dNormXvel(gen);	vel.y = dNormYvel(gen);	vel.z = dNormZvel(gen);
         //list.push_back(new Particle(pos, vel, { 0.0, -10.0, 0.0 }, { 0.0, 0.4, 0.6, 1.0 }, 0.999, dNormTime(gen)));
         auto p = _wM->clone(_model);
-        physx::PxTransform t;
+
+        PxRigidDynamic* actor = (PxRigidDynamic*)(p->rItem->actor);
+
+        auto t = physx::PxTransform ({ 0,0,0});
         t.p = pos;
-        p->rigidDynamic->setGlobalPose(t);
-        p->rigidDynamic->setLinearVelocity(vel);
+        actor->setGlobalPose(t);
+        actor->setLinearVelocity(vel);
         //p->setRemainingTime(dNormTime(gen));
         list.push_back(p);
         //}

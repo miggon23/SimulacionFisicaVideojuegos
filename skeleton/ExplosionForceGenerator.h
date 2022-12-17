@@ -9,7 +9,7 @@ private:
 	float _tConstant;
 	Vector3 _center;
 public:
-	ExplosionForceGenerator(const float explosionRadius, const float explosionForce, const float timeConstant, Vector3 center);
+	ExplosionForceGenerator(const float explosionRadius, const float explosionForce, const float timeConstant, Vector3 center, bool active);
 
 	virtual void updateForce(physx::PxRigidDynamic* p, double duration) override;
 

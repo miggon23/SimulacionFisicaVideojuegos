@@ -10,7 +10,11 @@ public:
 
 	inline void setName(std::string n) { _name = n; };
 	inline std::string getName() { return _name; };	
+	inline void setActive(bool b) { _active = b; };
+	inline bool getActive() { return _active; };
 protected:
 	std::string _name;
+
+	bool _active;
 };	
 

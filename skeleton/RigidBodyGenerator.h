@@ -18,8 +18,9 @@ protected:
 	int limitOfParticles;
 
 	WorldManager* _wM;
+	bool _active;
 public:
-	RigidBodyGenerator(WorldManager* wM, std::string nombre, Vector3 velM, Vector3 posM, int nPart);
+	RigidBodyGenerator(WorldManager* wM, std::string nombre, Vector3 velM, Vector3 posM, int nPart, bool active);
 	~RigidBodyGenerator();
 	inline void setParticle(RigidDynamic* model) { _model = model; };
 	inline void setMeanPos(Vector3 pos) { _mean_pos = pos; };
@@ -41,4 +42,7 @@ public:
 
 	inline std::string getGeneratorName() { return _name; };
 	inline void setGeneratorName(std::string s) { _name = s; };
+
+	inline bool getActive() { return _active; };
+	inline void setActive(bool b) { _active = b; };
 };

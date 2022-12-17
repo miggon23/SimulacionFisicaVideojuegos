@@ -2,6 +2,7 @@
 #include "UniformRBGenerator.h"
 #include "GaussianRBGenerator.h"
 #include "ExplosionForceGenerator.h"
+#include "TorqueForceGenerator.h"
 #include <time.h>
 #include <iostream>
 
@@ -9,6 +10,8 @@ using namespace physx;
 
 WorldManager::WorldManager(PxPhysics* gPhysics, PxScene* gScene) : _gPhysics(gPhysics), _gScene(gScene)
 {
+	_gen_delay = 600;
+	_next_gen = clock() + _gen_delay; //Miliseconds
 }
 
 void WorldManager::initWorld()
@@ -30,14 +33,58 @@ void WorldManager::initWorld()
 	new RenderItem(shape_suelo, Pared, { 0.8, 0.8, 0.8,1 });
 	_gScene->addActor(*Pared);
 
-	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 20000, 1.0, { 0.0, 0.0, 0.0 }));
+	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 20000, 1.0, { 0.0, 0.0, 0.0 }, false));
 	gE->setName("ExplosionGenerator");
 	addForceGenerator(gE);
 
-	shared_ptr<GaussianRBGenerator> g(new GaussianRBGenerator(this, { 0.1, 0.1, 0.1 }, { 3.0, 2.0, 3.0 }, 2.0, { 0.0, 10.0, 0.0 }, {0.0 , 50, 0.0}, 1));
+	shared_ptr<TorqueForceGenerator> gT(new TorqueForceGenerator(2.0, 80.0, {5.0, 0.0, 0.0}, false));
+	gT->setName("TorqueGenerator");
+	addForceGenerator(gT);
+
+
+
+	// -------
+
+	PxRigidDynamic* new_solid;
+	Vector3 size = { 7.0, 7.0, 7.0 };
+
+	PxQuat q = { 45, PxVec3 {0, 1, 0} }; // 45 grados girado en Y
+	PxQuat q2 = { 10, PxVec3 {1, 0, 0} }; // 10 grados girado en X
+	new_solid = _gPhysics->createRigidDynamic(PxTransform({ 0, 30, 0 }, q*q2)); // añadir quaternion para generar con giro
+
+	new_solid->setLinearVelocity({ 0.0, 10.0,0.0 }); // velocidad inicial
+	new_solid->setAngularVelocity({ 0.0, 0.0, 0.0 }); // velocidad de giro
+
+	shape = CreateShape(PxBoxGeometry(size));
+	//auto shape = CreateShape(PxSphereGeometry(2.0));
+	new_solid->attachShape(*shape);
+
+	new_solid->setMassSpaceInertiaTensor({ size.y * size.z, size.x * size.z, size.x * size.y }); // tensor de inercia, marca cómo gira el objeto al chocar
+
+//    new_solid->setMass(1.0);
+
+	auto item = new RenderItem(shape, new_solid, { 1.0, 0.0, 1.0, 1.0 });
+//	_items.push_back(item);
+
+	addToScene(new_solid);
+
+	particleFR->addRegistry(gT.get(), new_solid);
+	particleFR->addRegistry(gE.get(), new_solid);
+
+	RigidDynamic* model = new RigidDynamic();
+	model->rigidDynamic = new_solid;
+	model->rItem = item;
+	model->maxTime = MAXINT;
+	model->alive = true;
+	model->deathTime = MAXINT;
+	model->forcesName.push_back(gT->getName());
+	model->forcesName.push_back(gE->getName());
+
+	shared_ptr<GaussianRBGenerator> g(new GaussianRBGenerator(this, { 2, 0.1, 5 }, { 3.0, 3.0, 3.0 }, 2.0, { -10.0, 2.0, 10.0 }, { 14.0 , 15.0, 0.0 }, 1, true));
 	addParticleGenerator(g);
-	g->setMeanTime(4);
-	g->setGeneratorName("FireworkShooterGenerator");
+	g->setMeanTime(7);
+	g->setGeneratorName("GaussianGenerator");
+	g->setParticle(model);
 }
 
 void WorldManager::addDynamicRigidBody(Vector3 size, Vector3 p, Vector3 vel, Vector4 color, unsigned int time)
@@ -63,16 +110,35 @@ void WorldManager::addDynamicRigidBody(Vector3 size, Vector3 p, Vector3 vel, Vec
 	addToScene(new_solid);
 
 	//new_solid->putToSleep();
+	
 }
 
 void WorldManager::deleteDynamicRigidBody(RigidDynamic* rD)
 {
+	DeregisterRenderItem(rD->rItem);
 	delete rD;
 }
 
 void WorldManager::update(float dt)
 {
 	particleFR->updateForces(dt);
+
+
+	if (clock() >= _next_gen)
+	{
+		for (auto pG : _particle_generators)
+		{
+			if (pG->getActive())
+			{
+				auto l = pG->generateParticles();
+				for (auto p : l) {
+					itemList.push_back(p);
+					_gScene->addActor(*p->rigidDynamic);
+				}
+			}
+		}
+		_next_gen = clock() + _gen_delay;
+	}
 
 	for (auto p : itemList) {
 		//Intentamos cast dinamico para saber si es un firework
@@ -114,26 +180,26 @@ shared_ptr<ForceGenerator> WorldManager::getForceGenerator(std::string name)
 
 inline void WorldManager::addToScene(PxRigidDynamic* p)
 {
-	if (_activeForceGenerator != nullptr) {
-		particleFR->addRegistry(_activeForceGenerator.get(), p);
-	}
+	
 	_gScene->addActor(*p);
 }
 
 void WorldManager::activateForceGenerator(std::string s)
 {
-	//Si no hay generador activo o el nombre que llega es de un nuevo generador
-	if (_activeForceGenerator == nullptr || _activeForceGenerator->getName() != s) {
-		_activeForceGenerator = getForceGenerator(s);
-		if (_activeForceGenerator == nullptr)
-			std::cout << "No existe el generador " + s;
-		else 
+
+	auto fG = getForceGenerator(s);
+	if (fG != nullptr) {
+		bool b = fG->getActive();
+		fG->setActive(!b);
+		if(b)
+			std::cout << "Desactivado el generador de fuerzas " + fG->getName();
+		else
 			std::cout << "Activado el generador " + s;
+		
 	}
-	else {
-		std::cout << "Desactivado el generador de fuerzas " + _activeForceGenerator->getName();
-		_activeForceGenerator = nullptr;
-	}
+	else
+		std::cout << "No existe el generador " + s;
+
 	std::cout << '\n';
 }
 
@@ -167,5 +233,11 @@ RigidDynamic* WorldManager::clone(RigidDynamic* rD)
 	new_solid->attachShape(*shape);
 	Vector4 color = rD->rItem->color;
 	rigD->rItem = new RenderItem(shape, new_solid, color);
+
+	for (auto s : rD->forcesName) {
+		particleFR->addRegistry(getForceGenerator(s).get(), rigD->rigidDynamic);
+		rigD->forcesName.push_back(s);
+	}
+
 	return rigD;
 }

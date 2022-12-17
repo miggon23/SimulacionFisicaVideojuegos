@@ -2,8 +2,8 @@
 #include "WorldManager.h"
 #include <random>
 
-UniformRBGenerator::UniformRBGenerator(WorldManager* _gM, Vector3 velW, Vector3 posW, Vector3 posM, Vector3 velM, int nPart)
-                                        : RigidBodyGenerator(_gM, "UNIFORM_GENERATOR", posM, velM, nPart),
+UniformRBGenerator::UniformRBGenerator(WorldManager* _gM, Vector3 velW, Vector3 posW, Vector3 posM, Vector3 velM, int nPart, bool active)
+                                        : RigidBodyGenerator(_gM, "UNIFORM_GENERATOR", posM, velM, nPart, active), 
                                           _pos_width(posW), _vel_width(velW)
 {
 }

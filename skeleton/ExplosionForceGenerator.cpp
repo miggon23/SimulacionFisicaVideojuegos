@@ -1,12 +1,16 @@
 #include "ExplosionForceGenerator.h"
 
-ExplosionForceGenerator::ExplosionForceGenerator(const float explosionRadius, const float explosionForce, const float timeConstant, Vector3 center) : R(explosionRadius),
-																											k(explosionForce), _center(center), _tConstant(timeConstant)
+ExplosionForceGenerator::ExplosionForceGenerator(const float explosionRadius, const float explosionForce, const float timeConstant, Vector3 center, bool active) : R(explosionRadius),
+																						k(explosionForce), _center(center), _tConstant(timeConstant)
 {
+	_active = active;
 }
 
 void ExplosionForceGenerator::updateForce(physx::PxRigidDynamic* p, double duration)
 {
+	if (!_active)
+		return;
+
 	//auto pos = p->getPos();
 	auto pos = p->getGlobalPose().p;
 	//float distance = sqrtf(pow(pos.x - _center.x, 2) + pow(pos.y - _center.y, 2) + pow(pos.z - _center.z, 2));

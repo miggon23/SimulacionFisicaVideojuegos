@@ -271,6 +271,7 @@
     <ClCompile Include="RigidBodyGenerator.cpp" />
     <ClCompile Include="SinkForceGenerator.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
+    <ClCompile Include="TorqueForceGenerator.cpp" />
     <ClCompile Include="UniformParticleGenerator.cpp" />
     <ClCompile Include="UniformRBGenerator.cpp" />
     <ClCompile Include="UniformWindGenerator.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="RigidBodyGenerator.h" />
     <ClInclude Include="SinkForceGenerator.h" />
     <ClInclude Include="SpringForceGenerator.h" />
+    <ClInclude Include="TorqueForceGenerator.h" />
     <ClInclude Include="UniformParticleGenerator.h" />
     <ClInclude Include="UniformRBGenerator.h" />
     <ClInclude Include="UniformWindGenerator.h" />
