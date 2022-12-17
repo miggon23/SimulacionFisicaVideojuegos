@@ -149,7 +149,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'O':
 		wM->addDynamicRigidBody({ 3.0, 3.0, 3.0 }, { 0.0, 0.0, 0.0 }, { 8.0, 20.0, 0.0 }, { 0.6, 0.0, 0.7, 1.0 }, 5000);
 	break;
-	case 'M':
+	case 'E':
 		wM->activateForceGenerator("ExplosionGenerator");
 	break;
 	case 'T':
@@ -157,7 +157,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case 'G':
 	{
-		auto pG = wM->getParticleGenerator("Gaussian");
+		auto pG = wM->getParticleGenerator("GaussianGenerator");
 		pG->setActive(!pG->getActive());
 	}
 	break;

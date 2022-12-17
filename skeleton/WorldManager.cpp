@@ -80,7 +80,7 @@ void WorldManager::initWorld()
 	model->forcesName.push_back(gT->getName());
 	model->forcesName.push_back(gE->getName());
 
-	shared_ptr<GaussianRBGenerator> g(new GaussianRBGenerator(this, { 2, 0.1, 5 }, { 3.0, 3.0, 3.0 }, 2.0, { -10.0, 2.0, 10.0 }, { 14.0 , 15.0, 0.0 }, 1, true));
+	shared_ptr<GaussianRBGenerator> g(new GaussianRBGenerator(this, { 2, 0.1, 5 }, { 3.0, 3.0, 3.0 }, 2.0, { -10.0, 2.0, 10.0 }, { 14.0 , 15.0, 0.0 }, 1, false));
 	addParticleGenerator(g);
 	g->setMeanTime(7);
 	g->setGeneratorName("GaussianGenerator");
