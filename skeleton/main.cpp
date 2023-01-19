@@ -195,7 +195,15 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 		auto g = wM->getForceGenerator("ExplosionGenerator").get();
 		ExplosionForceGenerator* gExpl = (ExplosionForceGenerator*)g;
 		gExpl->setActive(!gExpl->getActive());
-		
+
+		if (actor2->getName() == "ObsExplosion") {
+			PxRigidDynamic* pX2 = (PxRigidDynamic*)actor2;
+			gExpl->setPosition(pX2->getGlobalPose().p);
+		}
+		else {
+			PxRigidDynamic* pX1 = (PxRigidDynamic*)actor1;
+			gExpl->setPosition(pX1->getGlobalPose().p);
+		}
 	}
 }
 

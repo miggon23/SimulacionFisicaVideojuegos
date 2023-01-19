@@ -37,7 +37,7 @@ void WorldManager::setUpTablero()
 	//new RenderItem(shapeTecho, techo, tableroJuego->color);
 	_gScene->addActor(*techo);
 
-	PxQuat pQuatParedBaja1 = { 0.7, PxVec3 {0, 1, 0} };
+	PxQuat pQuatParedBaja1 = { -0.7, PxVec3 {0, 1, 0} };
 	PxRigidStatic* ParedBaja1 = _gPhysics->createRigidStatic(PxTransform({ -2, -1.4, 3.2 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} } *pQuatParedBaja1));
 	PxShape* shape1 = CreateShape(PxBoxGeometry(tableroJuego->width / 6, 0.3, 0.3));
 	ParedBaja1->attachShape(*shape1);
@@ -86,14 +86,14 @@ void WorldManager::setUpTablero()
 	PxShape* shapeObs1 = CreateShape(PxBoxGeometry(0.2, 0.5, 0.2));
 	Obstaculo1->attachShape(*shapeObs1); Obstaculo1->setName("ObsExplosion");
 	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
-	new RenderItem(shapeObs1, Obstaculo1, tableroJuego->color * 0.4);
+	new RenderItem(shapeObs1, Obstaculo1, {0.9, 0.9, 0.0, 1.0});
 	_gScene->addActor(*Obstaculo1);
 
 	PxRigidStatic* Obstaculo2 = _gPhysics->createRigidStatic(PxTransform({ 1.5, 0.6, 0.0 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
 	PxShape* shapeObs2 = CreateShape(PxBoxGeometry(0.2, 0.5, 0.2));
 	Obstaculo2->attachShape(*shapeObs2); Obstaculo2->setName("ObsExplosion");
 	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
-	new RenderItem(shapeObs2, Obstaculo2, tableroJuego->color * 0.4);
+	new RenderItem(shapeObs2, Obstaculo2, { 0.9, 0.9, 0.0, 1.0 });
 	_gScene->addActor(*Obstaculo2);
 
 	//-----------------Zona de Saque -----------------
@@ -394,6 +394,9 @@ void WorldManager::update(float dt)
 	if (a < -10.0f) {
 		player_->resetPosition();
 		puntos = 0;
+		auto pG = getParticleGenerator("GaussianGenerator");
+		pG->setActive(false);
+		hardMode = false;
 	}
 		
 }
