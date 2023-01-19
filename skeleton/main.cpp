@@ -190,13 +190,11 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
 
-	
-
 	if (actor1->getName() == "Player" && actor2->getName() == "ObsExplosion"
 		|| actor2->getName() == "Player" && actor1->getName() == "ObsExplosion") {
 		auto g = wM->getForceGenerator("ExplosionGenerator").get();
 		ExplosionForceGenerator* gExpl = (ExplosionForceGenerator*)g;
-		gExpl->setActive(true);
+		gExpl->setActive(!gExpl->getActive());
 		
 	}
 }
