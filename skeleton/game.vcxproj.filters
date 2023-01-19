@@ -29,6 +29,8 @@
     <ClCompile Include="UniformRBGenerator.cpp" />
     <ClCompile Include="GaussianRBGenerator.cpp" />
     <ClCompile Include="TorqueForceGenerator.cpp" />
+    <ClCompile Include="MuelleIniciador.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -59,6 +61,8 @@
     <ClInclude Include="UniformRBGenerator.h" />
     <ClInclude Include="GaussianRBGenerator.h" />
     <ClInclude Include="TorqueForceGenerator.h" />
+    <ClInclude Include="MuelleIniciador.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

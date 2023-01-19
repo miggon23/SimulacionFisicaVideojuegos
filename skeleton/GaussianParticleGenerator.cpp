@@ -38,6 +38,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
         p->setPos(pos);
         p->setVel(vel);
         p->setRemainingTime(dNormTime(gen));
+        p->setMass(1);
         list.push_back(p);
         //}
     }

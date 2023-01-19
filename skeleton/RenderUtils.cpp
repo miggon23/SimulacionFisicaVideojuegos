@@ -12,6 +12,7 @@ extern void initPhysics(bool interactive);
 extern void stepPhysics(bool interactive, double t);	
 extern void cleanupPhysics(bool interactive);
 extern void keyPress(unsigned char key, const PxTransform& camera);
+extern void keyRelease(unsigned char key, const PxTransform& camera);
 extern PxPhysics* gPhysics;
 extern PxMaterial* gMaterial;
 
@@ -138,7 +139,7 @@ void renderLoop()
 {
 	StartCounter();
 	// Posicion Camara
-	sCamera = new Camera(PxVec3(0.0f, 6.0f, 8.0f), PxVec3(0.0f,-0.8f,-1.0f));
+	sCamera = new Camera(PxVec3(0.0f, 8.0f, 10.0f), PxVec3(0.0f,-0.8f,-1.0f));
 	//sCamera = new Camera(PxVec3(0.0f, 2.0f, 8.0f), PxVec3(0.0f,0.0f,-1.0f));
 
 	setupDefaultWindow("Simulacion Fisica Videojuegos");

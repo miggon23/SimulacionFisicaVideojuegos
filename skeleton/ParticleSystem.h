@@ -54,9 +54,9 @@ public:
 	void generateFireworkSystem();
 	void generateForcesGenerators();
 
-	void testSprings();
-	void testRubber();
-	void testSlinky();
+	//void testSprings();
+	//void testRubber();
+	//void testSlinky();
 
 	inline ParticleForceRegistry* getParticleForceRegistry() { return particleFR; };
 protected:

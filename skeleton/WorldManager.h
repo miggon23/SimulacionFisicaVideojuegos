@@ -28,6 +28,8 @@ struct Tablero {
 	Vector4 colorsaque;
 };
 
+class MuelleIniciador;
+class Player;
 class WorldManager
 {
 protected:
@@ -44,6 +46,11 @@ protected:
 
 	unsigned int _next_gen;
 	unsigned int _gen_delay;
+
+	int puntos;
+
+
+	void setUpTablero();
 public:
 	WorldManager(PxPhysics* gPhysics, PxScene* gScene);
 	~WorldManager();
@@ -64,6 +71,13 @@ public:
 
 	RigidDynamic* clone(RigidDynamic* rD);
 
-	Tablero* tableroJuego;
+	Tablero* tableroJuego = nullptr;
+	MuelleIniciador* initSpring = nullptr;
+	Player* player_ = nullptr;
+
+	inline int getPuntos() { return puntos; };
+	inline Player* getPlayer() { return player_; };
+	inline void addPuntos() { puntos += 50; };
+	bool hardMode = false;
 };
 

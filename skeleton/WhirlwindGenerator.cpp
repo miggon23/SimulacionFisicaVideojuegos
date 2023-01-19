@@ -2,18 +2,23 @@
 #include <iostream>
 
 
-WhirlwindGenerator::WhirlwindGenerator(float k1, float k2, float wForce,Vector3 wCenter) : ParticleDragGenerator(k1, k2), 
-																						k(wForce), _center(wCenter)
+WhirlwindGenerator::WhirlwindGenerator(float k1, float k2, float wForce, float rango, Vector3 wCenter) : ParticleDragGenerator(k1, k2), 
+																						k(wForce), _center(wCenter), rango(rango)
 {
 }
 
-void WhirlwindGenerator::updateForce(Particle* p, double t)
+void WhirlwindGenerator::updateForce(physx::PxRigidDynamic* p, double t)
 {
+	float distance = abs((p->getGlobalPose().p - _center).normalize());
+
+	if (distance > rango)
+		return;
+
 	//Velocidad del viento proporcional a la distancia en el centro del torbellino
-	auto pos = p->getPos();
-	Vector3 v = p->getVel() - k * Vector3(
+	auto pos = p->getGlobalPose().p;
+	Vector3 v = p->getLinearVelocity() - k * Vector3(
 		-(pos.z - _center.z) -0.9* (pos.x - _center.x),
-		20 - (pos.y - _center.y),
+		0,
 		(pos.x - _center.x) -0.9*(pos.z - _center.z)
 	);
 

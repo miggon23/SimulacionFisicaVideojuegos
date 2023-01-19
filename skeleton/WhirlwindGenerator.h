@@ -6,9 +6,10 @@ class WhirlwindGenerator :
 private:
     Vector3 _center;
     float k;
+    float rango;
 public:
-    WhirlwindGenerator(float k1, float k2, float wForce, Vector3 wCenter);
-    virtual void updateForce(Particle* particle, double t) override;
+    WhirlwindGenerator(float k1, float k2, float wForce, float rango, Vector3 wCenter);
+    virtual void updateForce(physx::PxRigidDynamic* p, double t) override;
 
     inline void setK(float constant) {
         if (constant > 0.2)

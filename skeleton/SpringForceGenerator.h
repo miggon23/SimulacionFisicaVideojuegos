@@ -20,6 +20,7 @@ protected:
 class AnchoredSpringFG : public SpringForceGenerator {
 public:
 	AnchoredSpringFG(double k, double resting, Vector3 anchor_pos);
+	//void updateForce(physx::PxRigidDynamic* particle, double duration) override;
 
 	~AnchoredSpringFG();
 };
@@ -29,5 +30,16 @@ class RubberForceGenerator : public SpringForceGenerator
 public:
 	RubberForceGenerator(double k, double resting_length, physx::PxRigidDynamic* other);
 	virtual void updateForce(physx::PxRigidDynamic* particle, double duration) override;
+};
+
+class PinballSpringGenerator : public SpringForceGenerator
+{
+private:
+	Vector3 initPoint;
+	bool ready = true;
+public:
+	PinballSpringGenerator(double k, double resting_length, Vector3 init);
+	virtual void updateForce(physx::PxRigidDynamic* particle, double duration) override;
+
 };
 

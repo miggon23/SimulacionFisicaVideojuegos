@@ -24,5 +24,8 @@ public:
 			R = constant;
 	}
 	inline float getR() { return R; };
+	inline void setPosition(Vector3 v) {
+		_center = v;
+	}
 };
 

@@ -17,10 +17,11 @@
 #include "SpringForceGenerator.h"
 #include "SinkForceGenerator.h"
 #include "WorldManager.h"
+#include "Player.h"
 
 #include <iostream>
 
-
+std::string display_text = "Puntos: ";
 
 using namespace physx;
 
@@ -89,6 +90,8 @@ void initPhysics(bool interactive)
 }
 
 
+
+
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
 // t: time passed since last call in milliseconds
@@ -103,11 +106,14 @@ void stepPhysics(bool interactive, double t)
 	/*for (auto p : vParticle) {
 		p->integrate(t);
 	}*/
-	/*pSys->update(t);*/
 
 	/*auto pG = pSys->getParticleGenerator("UNIFORM_GENERATOR");
 	for (auto p : pG->generateParticles())
 		pSys->addParticle(p);*/
+	pSys->update(t);
+	int puntos = wM->getPuntos();
+	string s = "Puntos: " + to_string(puntos);
+	display_text = s;
 }
 
 // Function to clean data
@@ -135,12 +141,11 @@ void cleanupPhysics(bool interactive)
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
-	
 	switch(toupper(key))
 	{
 	//case 'B': break;
 	//case ' ':	break;
-	case 'B':
+	/*case 'B':
 	{
 		auto cam = GetCamera(); 
 		pSys->addParticle(cam->getEye(), cam->getDir());
@@ -151,14 +156,28 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	break;
 	case 'E':
 		wM->activateForceGenerator("ExplosionGenerator");
-	break;
+	break;*/
 	case 'T':
-		wM->activateForceGenerator("TorqueGenerator");
+		pSys->shootFirework(4);
 	break;
 	case 'G':
 	{
 		auto pG = wM->getParticleGenerator("GaussianGenerator");
 		pG->setActive(!pG->getActive());
+		wM->hardMode = !wM->hardMode;
+	}
+	break;
+	case ' ':
+	{
+		if (wM->getPlayer()->addForceToPlayer(8)) {
+			wM->addPuntos();
+			if (!wM->hardMode && wM->getPuntos() > 200) {
+				auto pG = wM->getParticleGenerator("GaussianGenerator");
+				pG->setActive(true);
+				wM->hardMode = true;
+				pSys->shootFirework(4);
+			}
+		}
 	}
 	break;
 	default:
@@ -170,6 +189,16 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
+
+	
+
+	if (actor1->getName() == "Player" && actor2->getName() == "ObsExplosion"
+		|| actor2->getName() == "Player" && actor1->getName() == "ObsExplosion") {
+		auto g = wM->getForceGenerator("ExplosionGenerator").get();
+		ExplosionForceGenerator* gExpl = (ExplosionForceGenerator*)g;
+		gExpl->setActive(true);
+		
+	}
 }
 
 

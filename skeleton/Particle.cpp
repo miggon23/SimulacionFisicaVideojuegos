@@ -27,25 +27,10 @@ void Particle::integrate(double t)
 	if (!isAlive())
 		return;
 
-	if (inverse_mass > 0.0f) {
-		_vel = _vel * pow(damping, t) + acceleration * t;
-		//pose.p += _vel * t + 0.5 * acceleration * t;
-		if(!semiImplicit)
-			pose.p += _vel * t;
-		Vector3 totalAcceleration = acceleration;
-		totalAcceleration += force * inverse_mass;
+	_vel = _vel * pow(damping, t) + acceleration * t;
+	pose.p += _vel * t + 0.5 * acceleration * t;
 
-		//Update linear velocity
-		_vel += totalAcceleration * t;
-
-		//Impose drag(damping)
-		_vel *= powf(damping, t);
-
-		if(semiImplicit)
-			pose.p += _vel * t;
-
-		clearForce(); //Limpiamos a fuerza una vez integrada
-	}
+	remainingTime -= t;			//	SEGUNDOS	
 
 	if (!changingColor)
 		return;
