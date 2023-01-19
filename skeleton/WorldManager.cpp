@@ -14,24 +14,63 @@ WorldManager::WorldManager(PxPhysics* gPhysics, PxScene* gScene) : _gPhysics(gPh
 	_next_gen = clock() + _gen_delay; //Miliseconds
 }
 
+WorldManager::~WorldManager()
+{
+	delete tableroJuego;
+	delete particleFR;
+}
+
 void WorldManager::initWorld()
 {
+	tableroJuego = new Tablero; 
+	tableroJuego->width = 3.6;
+	tableroJuego->height = 4.0;
+	tableroJuego->rot = 0.6;
 	particleFR = new ParticleForceRegistry();
 
-	PxRigidStatic* Suelo = _gPhysics->createRigidStatic(PxTransform({ 0, 0, 0 }));
-	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
+	//Añadir tablero de pinball, rotado 20º
+	PxRigidStatic* Suelo = _gPhysics->createRigidStatic(PxTransform({ 0, 0, 0 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
+	PxShape* shape = CreateShape(PxBoxGeometry(tableroJuego->width, 0.3, tableroJuego->height));
 	Suelo->attachShape(*shape);
 	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
-	new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 });
+	new RenderItem(shape, Suelo, { 0.5, 0.25, 0.9, 1 });
 	_gScene->addActor(*Suelo);
 
+	PxRigidStatic* ParedBaja1 = _gPhysics->createRigidStatic(PxTransform({ -2, -1.4, 3.2 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
+	PxShape* shape1 = CreateShape(PxBoxGeometry(tableroJuego->width/2.5, 0.3, 0.3));
+	ParedBaja1->attachShape(*shape1);
+	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
+	new RenderItem(shape1, ParedBaja1, { 0.5, 0.25, 0.9, 1 });
+	_gScene->addActor(*ParedBaja1);
+
+	PxRigidStatic* ParedBaja2 = _gPhysics->createRigidStatic(PxTransform({2, -1.4, 3.2 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
+	PxShape* shape2 = CreateShape(PxBoxGeometry(tableroJuego->width / 2.5, 0.3, 0.3));
+	ParedBaja2->attachShape(*shape2);
+	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
+	new RenderItem(shape2, ParedBaja2, { 0.5, 0.25, 0.9, 1 });
+	_gScene->addActor(*ParedBaja2);
+
+	PxRigidStatic* ParedLateral1 = _gPhysics->createRigidStatic(PxTransform({ -3.5, 1.0, 0.0 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
+	PxShape* shape3 = CreateShape(PxBoxGeometry(0.3, 0.3, tableroJuego->height));
+	ParedLateral1->attachShape(*shape3);
+	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
+	new RenderItem(shape3, ParedLateral1, { 0.5, 0.25, 0.9, 1 });
+	_gScene->addActor(*ParedLateral1);
+
+	PxRigidStatic* ParedLateral2 = _gPhysics->createRigidStatic(PxTransform({ 3.5, 1.0, 0.0 }, PxQuat{ tableroJuego->rot, PxVec3 {1, 0, 0} }));
+	PxShape* shape4 = CreateShape(PxBoxGeometry(0.3, 0.3, tableroJuego->height));
+	ParedLateral2->attachShape(*shape4);
+	//itemRenderList.push_back(new RenderItem(shape, Suelo, { 0.8, 0.8, 0.8, 1 }));
+	new RenderItem(shape4, ParedLateral2, { 0.5, 0.25, 0.9, 1 });
+	_gScene->addActor(*ParedLateral2);
+	
 	//Add wall
-	PxRigidStatic* Pared = _gPhysics->createRigidStatic(PxTransform({ 10, 10, -10 }));
-	PxShape* shape_suelo = CreateShape(PxBoxGeometry(40, 20, 5));
-	Pared->attachShape(*shape_suelo);
-	//itemRenderList.push_back(new RenderItem(shape_suelo, Pared, { 0.8, 0.8, 0.8,1 }));
-	new RenderItem(shape_suelo, Pared, { 0.8, 0.8, 0.8,1 });
-	_gScene->addActor(*Pared);
+	//PxRigidStatic* Pared = _gPhysics->createRigidStatic(PxTransform({ 10, 10, -10 }));
+	//PxShape* shape_suelo = CreateShape(PxBoxGeometry(40, 20, 5));
+	//Pared->attachShape(*shape_suelo);
+	////itemRenderList.push_back(new RenderItem(shape_suelo, Pared, { 0.8, 0.8, 0.8,1 }));
+	//new RenderItem(shape_suelo, Pared, { 0.8, 0.8, 0.8,1 });
+	//_gScene->addActor(*Pared);
 
 	shared_ptr<ForceGenerator> gE(new ExplosionForceGenerator(100, 20000, 1.0, { 0.0, 0.0, 0.0 }, false));
 	gE->setName("ExplosionGenerator");
@@ -46,16 +85,16 @@ void WorldManager::initWorld()
 	// -------
 
 	PxRigidDynamic* new_solid;
-	Vector3 size = { 7.0, 7.0, 7.0 };
+	Vector3 size = {0.0, 7.0, 7.0 };
 
 	PxQuat q = { 45, PxVec3 {0, 1, 0} }; // 45 grados girado en Y
 	PxQuat q2 = { 10, PxVec3 {1, 0, 0} }; // 10 grados girado en X
-	new_solid = _gPhysics->createRigidDynamic(PxTransform({ 0, 30, 0 }, q*q2)); // añadir quaternion para generar con giro
+	new_solid = _gPhysics->createRigidDynamic(PxTransform({ 0, 1, 0 }, q*q2)); // añadir quaternion para generar con giro
 
-	new_solid->setLinearVelocity({ 0.0, 10.0,0.0 }); // velocidad inicial
+	new_solid->setLinearVelocity({ 0.0, 0.0, 0.0 }); // velocidad inicial
 	new_solid->setAngularVelocity({ 0.0, 0.0, 0.0 }); // velocidad de giro
-
-	shape = CreateShape(PxBoxGeometry(size));
+	
+	shape = CreateShape(PxSphereGeometry(0.1));
 	//auto shape = CreateShape(PxSphereGeometry(2.0));
 	new_solid->attachShape(*shape);
 

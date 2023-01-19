@@ -20,6 +20,12 @@ struct RigidDynamic {
 	vector<string> forcesName;
 };
 
+struct Tablero {
+	float width;
+	float height;
+	float rot;
+};
+
 class WorldManager
 {
 protected:
@@ -38,6 +44,7 @@ protected:
 	unsigned int _gen_delay;
 public:
 	WorldManager(PxPhysics* gPhysics, PxScene* gScene);
+	~WorldManager();
 	
 	void initWorld();
 	void addDynamicRigidBody(Vector3 size, Vector3 p, Vector3 vel, Vector4 color, unsigned int time);
@@ -54,5 +61,7 @@ public:
 	void activateForceGenerator(std::string s);
 
 	RigidDynamic* clone(RigidDynamic* rD);
+
+	Tablero* tableroJuego;
 };
 
