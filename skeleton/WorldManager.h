@@ -24,6 +24,8 @@ struct Tablero {
 	float width;
 	float height;
 	float rot;
+	Vector4 color;
+	Vector4 colorsaque;
 };
 
 class WorldManager
